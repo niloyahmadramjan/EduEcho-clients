@@ -1,16 +1,22 @@
-import React from 'react';
-import Navbar from '../components/Navbar/Navbar';
-import { Outlet } from 'react-router';
-import Footer from '../components/Footer/Footer';
+import React from "react";
+import Navbar from "../components/Navbar/Navbar";
+import { Outlet } from "react-router";
+import Footer from "../components/Footer/Footer";
 
 const Routes = () => {
-    return (
-        <div>
-            <Navbar></Navbar>
-            <Outlet></Outlet>
-            <Footer></Footer>
-        </div>
-    );
+  return (
+    <div className="max-w-7xl mx-auto">
+      <div className="h-20">
+        <Navbar />
+      </div>
+
+      <div className="min-h-[calc(100vh-430.8px)]">
+        <Outlet />
+      </div>
+
+      <Footer />
+    </div>
+  );
 };
 
 export default Routes;
