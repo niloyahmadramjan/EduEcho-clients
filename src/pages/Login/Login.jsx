@@ -1,9 +1,12 @@
 import Lottie from "lottie-react";
-import React from "react";
+import React, { use } from "react";
 import { Link } from "react-router";
 import loginAnimation from "../../assets/lotties/register.json";
+import { AuthContext } from "../../context/AuthContext";
 
 const Login = () => {
+    const {user} = use(AuthContext);
+    console.log(user)
 
   return (
     <div className="min-h-screen bg-base-200 flex items-center justify-center px-4">
