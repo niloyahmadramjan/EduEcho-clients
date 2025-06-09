@@ -4,6 +4,7 @@ import { FaHome, FaBookOpen, FaPlus, FaBars } from "react-icons/fa";
 import { MdDarkMode, MdLightMode } from "react-icons/md";
 import { motion } from "framer-motion";
 import { FcAbout } from "react-icons/fc";
+import AuthUser from "../../services/Hook/AuthUser";
 
 const navLinks = [
   { to: "/", label: "Home", icon: <FaHome />, delay: 0.2 },
@@ -19,6 +20,8 @@ const navLinks = [
 ];
 
 const Navbar = () => {
+  const {user}= AuthUser();
+  console.log(user)
   const [theme, setTheme] = useState("light");
 
   const handleTheme = () => {
@@ -74,7 +77,8 @@ const Navbar = () => {
                 </motion.li>
               ))}
 
-              <div className="dropdown dropdown-end">
+             {
+              user?.email?  <div className="dropdown dropdown-end">
                 <div
                   tabIndex={0}
                   role="button"
@@ -83,7 +87,7 @@ const Navbar = () => {
                   <div className="w-10 rounded-full">
                     <img
                       alt="User Avatar"
-                      src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                      src={user.photoURL}
                     />
                   </div>
                 </div>
@@ -106,8 +110,14 @@ const Navbar = () => {
                       Logout
                     </a>
                   </li>
+                  <li>
+                    <a className="text-black dark:text-white transition-colors duration-300">
+                     {user.email}
+                    </a>
+                  </li>
                 </ul>
-              </div>
+              </div> : <Link to='/login' className="btn btn-primary ">Login</Link>
+             }
             </ul>
           </div>
 

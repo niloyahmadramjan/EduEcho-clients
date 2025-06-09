@@ -3,10 +3,39 @@ import React, { use } from "react";
 import { Link } from "react-router";
 import loginAnimation from "../../assets/lotties/register.json";
 import { AuthContext } from "../../context/AuthContext";
+import Swal from "sweetalert2";
 
 const Login = () => {
-    const {user} = use(AuthContext);
-    console.log(user)
+  const { user, handleUserSignIn } = use(AuthContext);
+  
+  const handleLogin = (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const email = form.email.value;
+    const pass = form.pass.value;
+    handleUserSignIn(email, pass)
+      .then(() => {
+        Swal.fire({
+          position: "center",
+          icon: "success",
+          title: "LogIn successfull !",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+        form.reset();
+      })
+      .catch((error) => {
+        Swal.fire({
+          position: "center",
+          icon: "error",
+          title: error.message,
+          showConfirmButton: false,
+          timer: 2000,
+        });
+        form.reset();
+      });
+  };
+  console.log(user);
 
   return (
     <div className="min-h-screen bg-base-200 flex items-center justify-center px-4">
@@ -19,7 +48,7 @@ const Login = () => {
           <p className="text-center mb-8 text-gray-500">
             Login to your account to continue
           </p>
-          <form>
+          <form onSubmit={handleLogin}>
             <div className="mb-4">
               <label className="label font-semibold">Email</label>
               <input
