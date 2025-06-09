@@ -1,29 +1,37 @@
 import Lottie from "lottie-react";
-import React from "react";
 import { Link } from "react-router";
-import loginAnimation from "../../assets/lotties/register.json";
+import registerAnimation from "../../assets/lotties/registration.json";
 
-const Login = () => {
-
+const Register = () => {
+ 
   return (
     <div className="min-h-screen bg-base-200 flex items-center justify-center px-4">
       <div className="grid grid-cols-1 lg:grid-cols-2 items-center gap-10 w-full max-w-6xl">
-        {/* Left Side - Login Form */}
+        {/* Left Side - Register Form */}
         <div className="bg-base-100 rounded-2xl shadow-xl p-8 w-full">
           <h2 className="text-3xl lg:text-4xl font-bold text-center mb-6">
-            Welcome Back
+            Create Account
           </h2>
           <p className="text-center mb-8 text-gray-500">
-            Login to your account to continue
+            Join us and build your career!
           </p>
           <form>
+            <div className="mb-4">
+              <label className="label font-semibold">Full Name</label>
+              <input
+                name="name"
+                type="text"
+                className="input input-bordered w-full"
+                placeholder="Your name"
+              />
+            </div>
             <div className="mb-4">
               <label className="label font-semibold">Email</label>
               <input
                 type="email"
                 name="email"
                 className="input input-bordered w-full"
-                placeholder="Enter your email"
+                placeholder="Your email"
               />
             </div>
             <div className="mb-4">
@@ -32,31 +40,29 @@ const Login = () => {
                 type="password"
                 name="pass"
                 className="input input-bordered w-full"
-                placeholder="Enter your password"
+                placeholder="Password"
               />
             </div>
-            <div className="text-right mb-4">
-              <a className="link link-hover text-sm text-primary">
-                Forgot password?
-              </a>
-            </div>
-            <button className="btn btn-primary w-full">Login</button>
+            {/* {errorMessage? <p className="text-red-400 text-sm">{errorMessage}</p> : ''} */}
+            <button className="btn btn-primary w-full">Register</button>
           </form>
           <p className="text-center text-sm mt-6">
-            Don't have an account?
-            <Link to="/register" className="link link-primary ml-1">
-              Register
+            Already have an account?
+            <Link to="/login" className="link link-primary ml-1">
+              Login
             </Link>
           </p>
         </div>
 
-        {/* Right Side - Lottie Animation */}
+        {/* Right Side - Lottie or Image */}
         <div className="hidden lg:flex justify-center">
-          <Lottie animationData={loginAnimation} loop={true}></Lottie>
+          {/* Replace with Lottie if you want */}
+          {/* <Lottie animationData={registerAnimation} loop={true} /> */}
+          <Lottie animationData={registerAnimation} loop={true}></Lottie>
         </div>
       </div>
     </div>
   );
 };
 
-export default Login;
+export default Register;
