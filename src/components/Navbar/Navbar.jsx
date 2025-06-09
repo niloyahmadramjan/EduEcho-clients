@@ -7,10 +7,15 @@ import { FcAbout } from "react-icons/fc";
 
 const navLinks = [
   { to: "/", label: "Home", icon: <FaHome />, delay: 0.2 },
-  { to: "/allArticles", label: "All Articles", icon: <FaBookOpen />, delay: 0.3 },
+  {
+    to: "/allArticles",
+    label: "All Articles",
+    icon: <FaBookOpen />,
+    delay: 0.3,
+  },
   { to: "/myArticles", label: "My Articles", icon: <FaBookOpen />, delay: 0.4 },
   { to: "/postArticle", label: "Post Article", icon: <FaPlus />, delay: 0.5 },
-  { to: "/aboutUs", label: "About Us", icon: <FcAbout />, delay: 0.6 }
+  { to: "/aboutUs", label: "About Us", icon: <FcAbout />, delay: 0.6 },
 ];
 
 const Navbar = () => {
@@ -38,7 +43,12 @@ const Navbar = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
           >
-            <Link to="/" className="md:text-2xl text-xl uppercase font-bold text-cyan-400">EduEcho</Link>
+            <Link
+              to="/"
+              className="md:text-2xl text-xl uppercase font-bold text-cyan-400"
+            >
+              EduEcho
+            </Link>
           </motion.div>
 
           {/* Desktop Nav Items */}
@@ -54,13 +64,50 @@ const Navbar = () => {
                   <NavLink
                     to={to}
                     className={({ isActive }) =>
-                      isActive ? "text-cyan-400 font-bold" : "hover:text-cyan-300"
+                      isActive
+                        ? "text-cyan-400 font-bold"
+                        : "hover:text-cyan-300"
                     }
                   >
                     {icon} <span className="ml-1">{label}</span>
                   </NavLink>
                 </motion.li>
               ))}
+
+              <div className="dropdown dropdown-end">
+                <div
+                  tabIndex={0}
+                  role="button"
+                  className="btn btn-ghost btn-circle avatar"
+                >
+                  <div className="w-10 rounded-full">
+                    <img
+                      alt="User Avatar"
+                      src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                    />
+                  </div>
+                </div>
+                <ul
+                  tabIndex={0}
+                  className="menu menu-sm dropdown-content bg-accent-content rounded-box z-1 mt-3 w-52 p-2 shadow"
+                >
+                  <li>
+                    <a className="justify-between text-black dark:text-white">
+                      My Articles
+                    </a>
+                  </li>
+                  <li>
+                    <a className="text-black dark:text-white transition-colors duration-300">
+                      Post Article
+                    </a>
+                  </li>
+                  <li>
+                    <a className="text-black dark:text-white transition-colors duration-300">
+                      Logout
+                    </a>
+                  </li>
+                </ul>
+              </div>
             </ul>
           </div>
 
@@ -86,7 +133,9 @@ const Navbar = () => {
                     <NavLink
                       to={to}
                       className={({ isActive }) =>
-                        isActive ? "text-cyan-400 font-bold" : "hover:text-cyan-300"
+                        isActive
+                          ? "text-cyan-400 font-bold"
+                          : "hover:text-cyan-300"
                       }
                     >
                       {icon} <span className="ml-1">{label}</span>
@@ -95,7 +144,15 @@ const Navbar = () => {
                 ))}
                 <li>
                   <button onClick={handleTheme}>
-                    {theme === "light" ? <><MdDarkMode /> Dark</> : <><MdLightMode /> Light</>}
+                    {theme === "light" ? (
+                      <>
+                        <MdDarkMode /> Dark
+                      </>
+                    ) : (
+                      <>
+                        <MdLightMode /> Light
+                      </>
+                    )}
                   </button>
                 </li>
               </ul>
