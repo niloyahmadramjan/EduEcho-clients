@@ -1,9 +1,49 @@
 import Lottie from "lottie-react";
 import { Link } from "react-router";
 import registerAnimation from "../../assets/lotties/registration.json";
+import { use } from "react";
+import { AuthContext } from "../../context/AuthContext";
+import Swal from "sweetalert2";
 
 const Register = () => {
+  const { handleUserCreate, setUser, user, handleUserUpdate } =
+    use(AuthContext);
  
+  const handleRegister = (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const userName = form.name.value;
+    const imageUrl = form.imgURL.value;
+    const email = form.email.value;
+    const password = form.pass.value;
+
+    handleUserCreate(email, password)
+      .then((data) => {
+        handleUserUpdate(userName, imageUrl).then(() => {
+          setUser(data.user);
+          Swal.fire({
+            position: "center",
+            icon: "success",
+            title: "Registraiton successfull !",
+            showConfirmButton: false,
+            timer: 2000,
+          });
+          form.reset();
+        });
+      })
+      .catch((error) => {
+        Swal.fire({
+          position: "center",
+          icon: "error",
+          title: error.message,
+          showConfirmButton: false,
+          timer: 2500,
+        });
+        form.reset();
+      });
+  };
+   console.log(user);
+
   return (
     <div className="min-h-screen bg-base-200 flex items-center justify-center px-4">
       <div className="grid grid-cols-1 lg:grid-cols-2 items-center gap-10 w-full max-w-6xl">
@@ -15,7 +55,7 @@ const Register = () => {
           <p className="text-center mb-8 text-gray-500">
             Join us and build your career!
           </p>
-          <form>
+          <form onSubmit={handleRegister}>
             <div className="mb-4">
               <label className="label font-semibold">Full Name</label>
               <input
@@ -23,6 +63,15 @@ const Register = () => {
                 type="text"
                 className="input input-bordered w-full"
                 placeholder="Your name"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="label font-semibold">Photo URL</label>
+              <input
+                name="imgURL"
+                type="url"
+                className="input input-bordered w-full"
+                placeholder="Your photo URL"
               />
             </div>
             <div className="mb-4">
