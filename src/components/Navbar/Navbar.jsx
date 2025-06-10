@@ -5,7 +5,8 @@ import { MdDarkMode, MdLightMode } from "react-icons/md";
 import { motion } from "framer-motion";
 import { FcAbout } from "react-icons/fc";
 import AuthUser from "../../services/Hook/AuthUser";
-import avator from "../../assets/icons/profile.png"
+import avator from "../../assets/icons/profile.png";
+import Swal from "sweetalert2";
 
 const navLinks = [
   { to: "/", label: "Home", icon: <FaHome />, delay: 0.2 },
@@ -21,7 +22,7 @@ const navLinks = [
 ];
 
 const Navbar = () => {
-  const {user}= AuthUser();
+  const { user, handleUserSignOut } = AuthUser();
   const [imgSrc, setImgSrc] = useState(user?.photoURL || avator);
   const [theme, setTheme] = useState("light");
 
@@ -29,6 +30,28 @@ const Navbar = () => {
     const newTheme = theme === "light" ? "dark" : "light";
     setTheme(newTheme);
     document.documentElement.setAttribute("data-theme", newTheme);
+  };
+
+  const handleSignOut = () => {
+    handleUserSignOut()
+      .then(() => {
+        Swal.fire({
+          position: "center",
+          icon: "success",
+          title: "LogOut successfull !",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+      })
+      .catch((error) => {
+        Swal.fire({
+          position: "center",
+          icon: "error",
+          title: error.message,
+          showConfirmButton: false,
+          timer: 2000,
+        });
+      });
   };
 
   return (
@@ -78,48 +101,55 @@ const Navbar = () => {
                 </motion.li>
               ))}
 
-             {
-              user?.email?  <div className="dropdown dropdown-end">
-                <div
-                  tabIndex={0}
-                  role="button"
-                  className="btn btn-ghost btn-circle avatar"
-                >
-                  <div className="w-10 rounded-full">
-                    <img
-                                              alt="logo"
-                                              src={user?.photoURL || imgSrc}
-                                              onError={() => setImgSrc(avator)}
-                                            />
+              {user?.email ? (
+                <div className="dropdown dropdown-end">
+                  <div
+                    tabIndex={0}
+                    role="button"
+                    className="btn btn-ghost btn-circle avatar"
+                  >
+                    <div className="w-10 rounded-full">
+                      <img
+                        alt="Profile"
+                        src={user?.photoURL || imgSrc}
+                        onError={() => setImgSrc(avator)}
+                      />
+                    </div>
                   </div>
+                  <ul
+                    tabIndex={0}
+                    className="menu menu-sm dropdown-content bg-accent-content rounded-box z-1 mt-3 w-52 p-2 shadow"
+                  >
+                    <li>
+                      <a className="justify-between text-black dark:text-white">
+                        My Articles
+                      </a>
+                    </li>
+                    <li>
+                      <a className="text-black dark:text-white transition-colors duration-300">
+                        Post Article
+                      </a>
+                    </li>
+                    <li>
+                      <button
+                        onClick={handleSignOut}
+                        className="text-black dark:text-white transition-colors duration-300"
+                      >
+                        Logout
+                      </button>
+                    </li>
+                    <li>
+                      <a className="text-black dark:text-white transition-colors duration-300">
+                        {user.email}
+                      </a>
+                    </li>
+                  </ul>
                 </div>
-                <ul
-                  tabIndex={0}
-                  className="menu menu-sm dropdown-content bg-accent-content rounded-box z-1 mt-3 w-52 p-2 shadow"
-                >
-                  <li>
-                    <a className="justify-between text-black dark:text-white">
-                      My Articles
-                    </a>
-                  </li>
-                  <li>
-                    <a className="text-black dark:text-white transition-colors duration-300">
-                      Post Article
-                    </a>
-                  </li>
-                  <li>
-                    <a className="text-black dark:text-white transition-colors duration-300">
-                      Logout
-                    </a>
-                  </li>
-                  <li>
-                    <a className="text-black dark:text-white transition-colors duration-300">
-                     {user.email}
-                    </a>
-                  </li>
-                </ul>
-              </div> : <Link to='/login' className="btn btn-primary ">Login</Link>
-             }
+              ) : (
+                <Link to="/login" className="btn btn-primary ">
+                  Login
+                </Link>
+              )}
             </ul>
           </div>
 
