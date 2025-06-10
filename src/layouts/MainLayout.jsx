@@ -23,6 +23,7 @@ const router = createBrowserRouter([
           path: '/register',
           Component: Register,
         },
+        
         {
           path: "*",
           Component: NotFound

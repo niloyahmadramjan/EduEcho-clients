@@ -1,19 +1,16 @@
-import { FaHome, FaBookOpen, FaPlus, FaTwitter, FaLinkedin, FaFacebook, FaInstagram, FaYoutube } from "react-icons/fa";
+import { FaTwitter, FaLinkedin, FaFacebook, FaInstagram, FaYoutube } from "react-icons/fa";
 import { motion } from "framer-motion";
-import { FcAbout } from "react-icons/fc";
 import { NavLink } from "react-router";
 
 const Footer = () => {
   const navLinks = [
-    { to: "/", label: "Home", icon: <FaHome />, delay: 0.2 },
-    { to: "/allArticles", label: "All Articles", icon: <FaBookOpen />, delay: 0.3 },
-    { to: "/myArticles", label: "My Articles", icon: <FaBookOpen />, delay: 0.4 },
-    { to: "/postArticle", label: "Post Article", icon: <FaPlus />, delay: 0.5 },
-    { to: "/aboutUs", label: "About Us", icon: <FcAbout />, delay: 0.6 }
+    { to: "/aboutUs", label: "About Us", delay: 0.2 },
+    { to: "/contact", label: "Contact Us", delay: 0.3 },
+    { to: "/terms", label: "Terms & Conditions", delay: 0.4 }
   ];
 
   return (
-    <footer className="bg-[#0D1B2A] text-gray-300 py-10 px-6">
+    <footer className="bg-base-content dark:bg-[#0D1B2A] text-gray-300 py-10 px-6">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
 
         <div>
@@ -24,7 +21,7 @@ const Footer = () => {
         <div>
           <h2 className="text-lg font-semibold mb-3">Quick Links</h2>
           <ul className="flex flex-col gap-2">
-            {navLinks.map(({ to, label, icon, delay }) => (
+            {navLinks.map(({ to, label, delay }) => (
               <motion.li
                 key={to}
                 initial={{ opacity: 0, y: -10 }}
@@ -37,9 +34,7 @@ const Footer = () => {
                     isActive ? "text-cyan-400 font-bold" : "hover:text-cyan-300"
                   }
                 >
-                  <span className="inline-flex items-center gap-1">
-                    {icon} {label}
-                  </span>
+                  {label}
                 </NavLink>
               </motion.li>
             ))}

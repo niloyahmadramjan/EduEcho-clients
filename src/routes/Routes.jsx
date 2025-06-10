@@ -10,7 +10,7 @@ const Routes = () => {
         <Navbar />
       </div>
 
-      <div className="min-h-[calc(100vh-430.8px)]">
+      <div className="min-h-[calc(100vh-368.8px)]">
         <Outlet />
       </div>
 
