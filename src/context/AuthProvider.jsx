@@ -1,13 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AuthContext } from "./AuthContext";
-import {createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
+import {createUserWithEmailAndPassword, GithubAuthProvider, GoogleAuthProvider, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, updateProfile } from "firebase/auth";
 import { auth } from "../Firebase/firebase.config";
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState([]);
+  const [loading,setLoading]= useState(true)
 
 
   const handleUserCreate = (email,password)=>{
+    setLoading(true);
     return createUserWithEmailAndPassword(auth,email,password )
   }
   const handleUserUpdate = (userName,userImage)=>{
@@ -17,6 +19,20 @@ const AuthProvider = ({ children }) => {
     })
   }
 
+  // log in google
+    const googelProvider = new GoogleAuthProvider();
+    const handleLogInUserWithGoogle = () => {
+      setLoading(true);
+      return signInWithPopup(auth, googelProvider);
+      
+    };
+    // log in github
+    const githubProvider = new GithubAuthProvider();
+    const handleLogInUserWithGithub = () => {
+      setLoading(true);
+      return signInWithPopup(auth, githubProvider);
+    };
+// sign in use email and password
   const handleUserSignIn = (email,password)=>{
     return signInWithEmailAndPassword(auth,email,password);
   }
@@ -26,9 +42,21 @@ const AuthProvider = ({ children }) => {
     handleUserCreate,
     handleUserUpdate,
     handleUserSignIn,
+    handleLogInUserWithGoogle,
+    handleLogInUserWithGithub,
     user,
     setUser,
+    loading
   };
+
+  
+      useEffect(() => {
+      const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+        setUser(currentUser);
+        setLoading(false);
+      });
+      return () => unsubscribe();
+    }, []);
 
   return (
     <AuthContext.Provider value={userInfo}>{children}</AuthContext.Provider>

@@ -5,6 +5,7 @@ import { MdDarkMode, MdLightMode } from "react-icons/md";
 import { motion } from "framer-motion";
 import { FcAbout } from "react-icons/fc";
 import AuthUser from "../../services/Hook/AuthUser";
+import avator from "../../assets/icons/profile.png"
 
 const navLinks = [
   { to: "/", label: "Home", icon: <FaHome />, delay: 0.2 },
@@ -21,7 +22,7 @@ const navLinks = [
 
 const Navbar = () => {
   const {user}= AuthUser();
-  console.log(user)
+  const [imgSrc, setImgSrc] = useState(user?.photoURL || avator);
   const [theme, setTheme] = useState("light");
 
   const handleTheme = () => {
@@ -86,9 +87,10 @@ const Navbar = () => {
                 >
                   <div className="w-10 rounded-full">
                     <img
-                      alt="User Avatar"
-                      src={user.photoURL}
-                    />
+                                              alt="logo"
+                                              src={user?.photoURL || imgSrc}
+                                              onError={() => setImgSrc(avator)}
+                                            />
                   </div>
                 </div>
                 <ul
