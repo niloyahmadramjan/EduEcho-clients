@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import CountUp from "react-countup";
 import {
   FaLaptopCode,
   FaAtom,
@@ -70,7 +71,7 @@ const CategoriesSection = () => {
               <p className="text-sm text-gray-500 mb-3">
                 AI, Web Dev, Mobile Apps
               </p>
-              <p className="text-2xl font-bold text-primary">2,340</p>
+              <p className="text-2xl font-bold text-primary"> <CountUp end={2340} enableScrollSpy duration={5} /></p>
               <p className="text-xs text-gray-400">articles</p>
             </div>
           </motion.div>
@@ -91,7 +92,7 @@ const CategoriesSection = () => {
               <p className="text-sm text-gray-500 mb-3">
                 Research, Physics, Biology
               </p>
-              <p className="text-2xl font-bold text-primary">1,890</p>
+              <p className="text-2xl font-bold text-primary"> <CountUp end={1890} enableScrollSpy duration={5} /></p>
               <p className="text-xs text-gray-400">articles</p>
             </div>
           </motion.div>
@@ -112,7 +113,7 @@ const CategoriesSection = () => {
               <p className="text-sm text-gray-500 mb-3">
                 Design, Music, Literature
               </p>
-              <p className="text-2xl font-bold text-primary">1,456</p>
+              <p className="text-2xl font-bold text-primary"> <CountUp end={1456} enableScrollSpy duration={5} /></p>
               <p className="text-xs text-gray-400">articles</p>
             </div>
           </motion.div>
@@ -133,7 +134,7 @@ const CategoriesSection = () => {
               <p className="text-sm text-gray-500 mb-3">
                 Wellness, Medicine, Fitness
               </p>
-              <p className="text-2xl font-bold text-primary">987</p>
+              <p className="text-2xl font-bold text-primary"><CountUp end={987} enableScrollSpy duration={5} /></p>
               <p className="text-xs text-gray-400">articles</p>
             </div>
           </motion.div>
@@ -148,13 +149,13 @@ const CategoriesSection = () => {
               <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 flex items-center justify-center">
                 <FaGlobe className="text-white text-2xl" />
               </div>
-              <h3 className="text-xl font-bold text-foreground mb-2 text-primary text-primary">
+              <h3 className="text-xl font-bold text-foreground mb-2 text-primary">
                 Culture
               </h3>
               <p className="text-sm text-gray-500 mb-3">
                 Society, History, Travel
               </p>
-              <p className="text-2xl font-bold text-primary">1,234</p>
+              <p className="text-2xl font-bold text-primary"><CountUp end={1234} enableScrollSpy duration={5} /></p>
               <p className="text-xs text-gray-400">articles</p>
             </div>
           </motion.div>
@@ -175,7 +176,7 @@ const CategoriesSection = () => {
               <p className="text-sm text-gray-500 mb-3">
                 Entrepreneurship, Finance
               </p>
-              <p className="text-2xl font-bold text-primary">1,567</p>
+              <p className="text-2xl font-bold text-primary"><CountUp end={1567} enableScrollSpy duration={5} /> </p>
               <p className="text-xs text-gray-400">articles</p>
             </div>
           </motion.div>
@@ -196,7 +197,7 @@ const CategoriesSection = () => {
               <p className="text-sm text-gray-500 mb-3">
                 Learning, Teaching, Skills
               </p>
-              <p className="text-2xl font-bold text-primary">2,100</p>
+              <p className="text-2xl font-bold text-primary"><CountUp end={2100} enableScrollSpy duration={5} /></p>
               <p className="text-xs text-gray-400">articles</p>
             </div>
           </motion.div>
@@ -217,7 +218,7 @@ const CategoriesSection = () => {
               <p className="text-sm text-gray-500 mb-3">
                 Visual Arts, Techniques
               </p>
-              <p className="text-2xl font-bold text-primary">789</p>
+              <p className="text-2xl font-bold text-primary"><CountUp end={789} enableScrollSpy duration={5} /></p>
               <p className="text-xs text-gray-400">articles</p>
             </div>
           </motion.div>

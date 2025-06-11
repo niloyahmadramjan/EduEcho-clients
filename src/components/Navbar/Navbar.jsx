@@ -8,7 +8,13 @@ import AuthUser from "../../services/Hook/AuthUser";
 import avator from "../../assets/icons/profile.png";
 import Swal from "sweetalert2";
 
-const navLinks = [
+
+const Navbar = () => {
+  const { user, handleUserSignOut, loading } = AuthUser();
+  const [imgSrc, setImgSrc] = useState(user?.photoURL || avator);
+  const [theme, setTheme] = useState("light");
+
+  const navLinks = [
   { to: "/", label: "Home", icon: <FaHome />, delay: 0.2 },
   {
     to: "/allArticles",
@@ -16,15 +22,11 @@ const navLinks = [
     icon: <FaBookOpen />,
     delay: 0.3,
   },
-  { to: "/myArticles", label: "My Articles", icon: <FaBookOpen />, delay: 0.4 },
-  { to: "/postArticle", label: "Post Article", icon: <FaPlus />, delay: 0.5 },
+ ...(user? [ { to: "/myArticles", label: "My Articles", icon: <FaBookOpen />, delay: 0.4 },
+  { to: "/postArticle", label: "Post Article", icon: <FaPlus />, delay: 0.5 },] : []),
   { to: "/aboutUs", label: "About Us", icon: <FcAbout />, delay: 0.6 },
 ];
 
-const Navbar = () => {
-  const { user, handleUserSignOut, loading } = AuthUser();
-  const [imgSrc, setImgSrc] = useState(user?.photoURL || avator);
-  const [theme, setTheme] = useState("light");
 
   const handleTheme = () => {
     const newTheme = theme === "light" ? "dark" : "light";
