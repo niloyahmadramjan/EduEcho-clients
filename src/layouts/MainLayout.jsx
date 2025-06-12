@@ -6,6 +6,8 @@ import Login from "../pages/Login/Login";
 import Register from "../pages/Register/Register";
 import NotFound from "../pages/NotFound/NotFound";
 import FeaturedArticles from "../pages/AllArticles/FeaturedArticles";
+import PostArticle from "../pages/PostArticle/PostArticle";
+import MyArticles from "../pages/MyArticles/myArticles";
 
 const router = createBrowserRouter([
   {
@@ -31,6 +33,14 @@ const router = createBrowserRouter([
       {
         path: "/featuredArticles",
         Component: FeaturedArticles
+      },
+      {
+        path: "/postArticle",
+        Component: PostArticle,
+      },
+      {
+        path: "/myArticles",
+        Component: MyArticles,
       }
     ],
   },

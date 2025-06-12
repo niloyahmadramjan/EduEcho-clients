@@ -2,15 +2,19 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import axios from "axios";
 import { ThumbsUp, MessageCircle } from "lucide-react";
+import AuthUser from "../../services/Hook/AuthUser";
 
-const FeaturedArticles = () => {
+const MyArticles = () => {
+  const { user } = AuthUser();
   const [articles, setArticles] = useState([]);
   const [showArticles, setShowArticles] = useState(true);
 
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const { data } = await axios.get("http://localhost:3000/articles");
+        const { data } = await axios.get(
+          `http://localhost:3000/myArticles?email=${user.email}`
+        );
         const sliced = data.slice(0, 6);
         if (showArticles) {
           setArticles(sliced);
@@ -22,13 +26,11 @@ const FeaturedArticles = () => {
       }
     };
     fetchArticles();
-  }, [showArticles]);
+  }, [showArticles, user]);
 
   return (
     <div className="px-4 py-12 max-w-7xl mx-auto">
-      <h2 className="text-3xl font-bold text-center mb-12">  
-        Featured Articles
-      </h2>
+      <h2 className="text-3xl font-bold text-center mb-12">My Articles</h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {articles.map((article, i) => (
@@ -91,14 +93,18 @@ const FeaturedArticles = () => {
         ))}
       </div>
       <div className="w-full text-center">
-        <button
-          onClick={() => setShowArticles(!showArticles)}
-          >
-          {showArticles ? <span className="btn btn-dash btn-primary my-5">More Articles</span> :<span className="btn btn-dash btn-secondary my-5">Less Articles</span> }
+        <button onClick={() => setShowArticles(!showArticles)}>
+          {showArticles ? (
+            <span className="btn btn-dash btn-primary my-5">More Articles</span>
+          ) : (
+            <span className="btn btn-dash btn-secondary my-5">
+              Less Articles
+            </span>
+          )}
         </button>
       </div>
     </div>
   );
 };
 
-export default FeaturedArticles;
+export default MyArticles;

@@ -8,25 +8,37 @@ import AuthUser from "../../services/Hook/AuthUser";
 import avator from "../../assets/icons/profile.png";
 import Swal from "sweetalert2";
 
-
 const Navbar = () => {
   const { user, handleUserSignOut, loading } = AuthUser();
   const [imgSrc, setImgSrc] = useState(user?.photoURL || avator);
   const [theme, setTheme] = useState("light");
 
   const navLinks = [
-  { to: "/", label: "Home", icon: <FaHome />, delay: 0.2 },
-  {
-    to: "/featuredArticles",
-    label: "All Articles",
-    icon: <FaBookOpen />,
-    delay: 0.3,
-  },
- ...(user? [ { to: "/myArticles", label: "My Articles", icon: <FaBookOpen />, delay: 0.4 },
-  { to: "/postArticle", label: "Post Article", icon: <FaPlus />, delay: 0.5 },] : []),
-  { to: "/aboutUs", label: "About Us", icon: <FcAbout />, delay: 0.6 },
-];
-
+    { to: "/", label: "Home", icon: <FaHome />, delay: 0.2 },
+    {
+      to: "/featuredArticles",
+      label: "All Articles",
+      icon: <FaBookOpen />,
+      delay: 0.3,
+    },
+    ...(user
+      ? [
+          {
+            to: "/myArticles",
+            label: "My Articles",
+            icon: <FaBookOpen />,
+            delay: 0.4,
+          },
+          {
+            to: "/postArticle",
+            label: "Post Article",
+            icon: <FaPlus />,
+            delay: 0.5,
+          },
+        ]
+      : []),
+    { to: "/aboutUs", label: "About Us", icon: <FcAbout />, delay: 0.6 },
+  ];
 
   const handleTheme = () => {
     const newTheme = theme === "light" ? "dark" : "light";
@@ -72,7 +84,7 @@ const Navbar = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
           >
-             <div className="lg:hidden dropdown dropdown-bottom">
+            <div className="lg:hidden dropdown dropdown-bottom">
               <label tabIndex={0} className="btn btn-ghost">
                 <FaBars />
               </label>
@@ -162,14 +174,14 @@ const Navbar = () => {
                     className="menu menu-sm dropdown-content bg-accent-content rounded-box z-1 mt-3 w-52 p-2 shadow"
                   >
                     <li>
-                      <a className="justify-between text-black dark:text-white">
+                      <Link to="/myArticles" className="justify-between text-black dark:text-white">
                         My Articles
-                      </a>
+                      </Link>
                     </li>
                     <li>
-                      <a className="text-black dark:text-white transition-colors duration-300">
+                      <Link to="/postArticle" className="text-black dark:text-white transition-colors duration-300">
                         Post Article
-                      </a>
+                      </Link>
                     </li>
                     <li>
                       <button
@@ -202,8 +214,8 @@ const Navbar = () => {
             >
               {theme === "light" ? <MdDarkMode /> : <MdLightMode />}
             </button>
- <div className="md:hidden">
-   {loading ? (
+            <div className="md:hidden">
+              {loading ? (
                 <span className="loading loading-spinner text-primary"></span>
               ) : user?.email ? (
                 <div className="dropdown dropdown-end">
@@ -225,14 +237,18 @@ const Navbar = () => {
                     className="menu menu-sm dropdown-content bg-accent-content rounded-box z-1 mt-3 w-52 p-2 shadow"
                   >
                     <li>
-                      <a className="justify-between text-black dark:text-white">
+                      <Link to="/myArticles"
+                        className="justify-between text-black dark:text-white"
+                      >
                         My Articles
-                      </a>
+                      </Link>
                     </li>
                     <li>
-                      <a className="text-black dark:text-white transition-colors duration-300">
+                      <Link to="/postArticle"
+                        className="text-black dark:text-white transition-colors duration-300"
+                      >
                         Post Article
-                      </a>
+                      </Link>
                     </li>
                     <li>
                       <button
@@ -254,8 +270,7 @@ const Navbar = () => {
                   Login
                 </Link>
               )}
- </div>
-           
+            </div>
           </div>
         </motion.div>
       </div>
