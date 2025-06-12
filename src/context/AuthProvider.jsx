@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { AuthContext } from "./AuthContext";
 import {createUserWithEmailAndPassword, GithubAuthProvider, GoogleAuthProvider, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, signOut, updateProfile } from "firebase/auth";
 import { auth } from "../Firebase/firebase.config";
+import axios from "axios";
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState([]);
@@ -42,6 +43,19 @@ const AuthProvider = ({ children }) => {
       return signOut(auth)
   }
 
+
+  const fetchUserData = (uid) => {
+  axios.get(`http://localhost:3000/userinfo/${uid}`)
+    .then((res) => {
+      const user = res.data;
+     setUser(user)
+    })
+    .catch((err) => {
+      console.error("Failed to fetch user info", err);
+    });
+};
+
+
   const userInfo = {
     handleUserCreate,
     handleUserUpdate,
@@ -49,6 +63,7 @@ const AuthProvider = ({ children }) => {
     handleLogInUserWithGoogle,
     handleLogInUserWithGithub,
     handleUserSignOut,
+    fetchUserData,
     user,
     setUser,
     setLoading,

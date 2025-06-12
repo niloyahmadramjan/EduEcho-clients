@@ -1,10 +1,9 @@
 import Lottie from "lottie-react";
-import React, { use } from "react";
 import { Link } from "react-router";
 import loginAnimation from "../../assets/lotties/register.json";
-import { AuthContext } from "../../context/AuthContext";
 import Swal from "sweetalert2";
 import axios from "axios";
+import AuthUser from "../../services/Hook/AuthUser";
 
 const Login = () => {
   const {
@@ -12,7 +11,8 @@ const Login = () => {
     setLoading,
     handleLogInUserWithGoogle,
     handleLogInUserWithGithub,
-  } = use(AuthContext);
+    fetchUserData,
+  } = AuthUser();
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -20,7 +20,8 @@ const Login = () => {
     const email = form.email.value;
     const pass = form.pass.value;
     handleUserSignIn(email, pass)
-      .then(() => {
+      .then((data) => {
+        fetchUserData(data.user.uid);
         Swal.fire({
           position: "center",
           icon: "success",
@@ -47,6 +48,7 @@ const Login = () => {
     handleLogInUserWithGoogle()
       .then((data) => {
         const user = data.user;
+        fetchUserData(user.uid);
         axios
           .post("http://localhost:3000/userinfo", {
             uid: user.uid,
@@ -83,7 +85,22 @@ const Login = () => {
 
   const handleGithubPopup = () => {
     handleLogInUserWithGithub()
-      .then(() => {
+      .then((data) => {
+        const user = data.user;
+         fetchUserData(user.uid);
+        axios
+          .post("http://localhost:3000/userinfo", {
+            uid: user.uid,
+            name: user.displayName,
+            email: user.email,
+            photo: user.photoURL,
+          })
+          .then((res) => {
+            console.log("User info saved:", res.data);
+          })
+          .catch((error) => {
+            console.error("Failed to save user to MongoDB:", error);
+          });
         Swal.fire({
           position: "center",
           icon: "success",

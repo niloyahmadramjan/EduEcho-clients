@@ -1,33 +1,48 @@
 import Lottie from "lottie-react";
 import { Link } from "react-router";
 import registerAnimation from "../../assets/lotties/registration.json";
-import { use } from "react";
-import { AuthContext } from "../../context/AuthContext";
 import Swal from "sweetalert2";
+import axios from "axios";
+import AuthUser from "../../services/Hook/AuthUser";
 
 const Register = () => {
-  const { handleUserCreate, setUser, user, handleUserUpdate } =
-    use(AuthContext);
+  const { handleUserCreate, setUser, handleUserUpdate,setLoading } = AuthUser();
+    
  
   const handleRegister = (e) => {
     e.preventDefault();
     const form = e.target;
     const userName = form.name.value;
     const imageUrl = form.imgURL.value;
-    const email = form.email.value;
+    const userEmail = form.email.value;
     const password = form.pass.value;
 
-    handleUserCreate(email, password)
+    handleUserCreate(userEmail, password)
       .then((data) => {
         handleUserUpdate(userName, imageUrl).then(() => {
           setUser(data.user);
-          Swal.fire({
-            position: "center",
-            icon: "success",
-            title: "Registraiton successfull !",
-            showConfirmButton: false,
-            timer: 2000,
+       axios
+          .post("http://localhost:3000/userinfo", {
+            uid: data.user.uid,
+            name: userName,
+            email: userEmail,
+            photo: imageUrl,
+          })
+          .then((res) => {
+            console.log("User info saved:", res.data);
+          })
+          .catch((error) => {
+            console.error("Failed to save user to MongoDB:", error);
+            setLoading(false)
           });
+
+        Swal.fire({
+          position: "center",
+          icon: "success",
+          title: "Registration successful!",
+          showConfirmButton: false,
+          timer: 2000,
+        });
           form.reset();
         });
       })
@@ -40,10 +55,9 @@ const Register = () => {
           timer: 2500,
         });
         form.reset();
+        setLoading(false)
       });
   };
-   console.log(user);
-
   return (
     <div className="min-h-screen bg-base-200 flex items-center justify-center px-4">
       <div className="grid grid-cols-1 lg:grid-cols-2 items-center gap-10 w-full max-w-6xl">

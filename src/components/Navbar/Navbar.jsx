@@ -17,7 +17,7 @@ const Navbar = () => {
   const navLinks = [
   { to: "/", label: "Home", icon: <FaHome />, delay: 0.2 },
   {
-    to: "/allArticles",
+    to: "/featuredArticles",
     label: "All Articles",
     icon: <FaBookOpen />,
     delay: 0.3,
@@ -57,7 +57,7 @@ const Navbar = () => {
   };
 
   return (
-    <div className="fixed top-0 left-0 z-50 w-full dark:bg-[#0D1B2A] bg-opacity-90 backdrop-blur-md text-white shadow transition-colors duration-300">
+    <div className="fixed top-0 left-0 z-50 w-full  bg-opacity-90 backdrop-blur-md text-base-content shadow transition-colors duration-300">
       <div className="max-w-7xl mx-auto">
         <motion.div
           initial={{ y: -80 }}
