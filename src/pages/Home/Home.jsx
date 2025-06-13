@@ -4,6 +4,7 @@ import CategoriesSection from '../CategoriesSection/CategoriesSection';
 import StatsSection from '../StatsSection/StatsSection';
 import NewsletterSection from '../NewsletterSection/NewsletterSection';
 import FeaturedArticles from '../AllArticles/FeaturedArticles';
+import TopContributors from '../topContributors/TopContributors';
 
 const Home = () => {
     return (
@@ -13,6 +14,7 @@ const Home = () => {
            <StatsSection></StatsSection>
            <FeaturedArticles></FeaturedArticles>
            <CategoriesSection></CategoriesSection>
+           <TopContributors></TopContributors>
            <NewsletterSection></NewsletterSection>
         </div>
     );

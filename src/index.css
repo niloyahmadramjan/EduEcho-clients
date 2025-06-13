@@ -4,4 +4,7 @@
   name: "light";
   default: true;
   --color-primary: #00D3F3;
+  --color-background: #0f172a;
+  --color-foreground: #ffffff;
+  --color-muted: #64748b;
 }
