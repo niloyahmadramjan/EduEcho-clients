@@ -2,31 +2,36 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import axios from "axios";
 import { ThumbsUp, MessageCircle } from "lucide-react";
+import LoadingAnimation from "../loadingPage/LoadingAnimation";
 
 const FeaturedArticles = () => {
   const [articles, setArticles] = useState([]);
   const [showArticles, setShowArticles] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    setLoading(true);
     const fetchArticles = async () => {
       try {
         const { data } = await axios.get("http://localhost:3000/articles");
         const sliced = data.slice(0, 6);
-        if (showArticles) {
-          setArticles(sliced);
-          return;
-        }
-        setArticles(data);
+        setArticles(showArticles ? sliced : data);
       } catch (err) {
         console.error("Error fetching:", err);
+      } finally {
+        setLoading(false);
       }
     };
     fetchArticles();
   }, [showArticles]);
 
+  if (loading) {
+    return <LoadingAnimation />;
+  }
+
   return (
     <div className="px-4 py-12 max-w-7xl mx-auto">
-      <h2 className="text-3xl font-bold text-center mb-12">  
+      <h2 className="text-3xl font-bold text-center mb-12">
         Featured Articles
       </h2>
 
@@ -37,64 +42,80 @@ const FeaturedArticles = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}
-            className=" shadow-xl rounded-2xl overflow-hidden flex flex-col group hover:shadow-2xl transition-all duration-300"
+            className="bg-base-100 shadow-md rounded-xl overflow-hidden flex flex-col transition-all duration-300 hover:shadow-xl"
           >
-            <div className="relative h-48 bg-gradient-to-r from-indigo-500 to-purple-500 flex items-center justify-center  text-2xl font-semibold">
-              {article.category}
-              <div className="absolute bg-base-200 -bottom-5 left-4 flex items-center space-x-2 shadow p-2 text-base-content rounded-xl">
-                <img
-                  src={article.author_photo}
-                  alt={article.author_name}
-                  className="w-10 h-10 rounded-full border-2 border-transparent"
-                />
-                <div>
-                  <p className="text-sm font-medium text-base-content">
-                    {article.author_name}
-                  </p>
-                  <p className="text-xs text-gray-500">Author</p>
-                </div>
-              </div>
+            {/* Image Header */}
+            <div className="h-48 md:h-52 lg:h-56 w-full bg-gray-100 overflow-hidden">
+              <img
+                src={article.thumbnail}
+                alt={article.title}
+                className="w-full h-full object-cover"
+              />
             </div>
 
-            <div className="p-6 pt-8 flex flex-col flex-grow">
-              <div className="flex flex-wrap gap-2 mb-2">
-                {article.tags.map((tag, index) => (
-                  <span
-                    key={index}
-                    className="bg-gray-100 text-xs px-2 py-1 rounded-full text-gray-600"
-                  >
-                    #{tag}
-                  </span>
-                ))}
+            {/* Article Content */}
+            <div className="p-5 flex flex-col flex-grow">
+              {/* Tags */}
+              <div className="flex items-center gap-3 mb-2 text-sm text-gray-500">
+                <span className="bg-gray-200 text-xs font-medium px-2 py-0.5 rounded-full">
+                  {article.category}
+                </span>
+                <span>{article.read_time || "5 min read"}</span>
               </div>
 
-              <h3 className="text-xl font-semibold mb-2 text-base-content">
+              {/* Title */}
+              <h3 className="text-lg font-semibold text-base-content mb-1">
                 {article.title}
               </h3>
-              <p className="text-sm text-gray-600 flex-grow">
+
+              {/* Short description */}
+              <p className="text-sm text-gray-600 mb-4 line-clamp-3">
                 {article.content.slice(0, 120)}...
               </p>
 
-              <div className="flex justify-between items-center mt-6 pt-4 border-t">
-                <button className="flex items-center gap-1 text-gray-500 hover:text-blue-600 transition cursor-pointer">
+              
+              <div className="flex justify-end">
+                <button className="btn border-none">Read More</button>
+              </div>
+
+              {/* Author Info + Date */}
+              <div className="mt-auto pt-4 border-t flex items-center justify-between text-sm text-gray-500">
+                <div className="flex items-center gap-2">
+                  <img
+                    src={article.author_photo}
+                    alt={article.author_name}
+                    className="w-8 h-8 rounded-full object-cover"
+                  />
+                  <span>{article.author_name}</span>
+                </div>
+                <div>{article.date || "Dec 8, 2024"}</div>
+              </div>
+
+              {/* Like & Comment Buttons */}
+              <div className="flex justify-between items-center mt-4 pt-4 border-t">
+                <button className="flex items-center gap-1 text-gray-500 hover:text-primary transition cursor-pointer">
                   <ThumbsUp size={18} />
-                  <span> 0</span>
+                  <span>Like</span>
                 </button>
 
-                <div className="flex items-center gap-1 text-gray-500 cursor-pointer hover:text-blue-600">
+                <button className="flex items-center gap-1 text-gray-500 hover:text-primary transition cursor-pointer">
                   <MessageCircle size={18} />
-                  <span>0</span>
-                </div>
+                  <span>Comment</span>
+                </button>
               </div>
             </div>
           </motion.div>
         ))}
       </div>
       <div className="w-full text-center">
-        <button
-          onClick={() => setShowArticles(!showArticles)}
-          >
-          {showArticles ? <span className="btn btn-dash btn-primary my-5">More Articles</span> :<span className="btn btn-dash btn-secondary my-5">Less Articles</span> }
+        <button onClick={() => setShowArticles(!showArticles)}>
+          {showArticles ? (
+            <span className="btn btn-dash btn-primary my-5">More Articles</span>
+          ) : (
+            <span className="btn btn-dash btn-secondary my-5">
+              Less Articles
+            </span>
+          )}
         </button>
       </div>
     </div>
