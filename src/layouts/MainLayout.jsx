@@ -8,6 +8,7 @@ import NotFound from "../pages/NotFound/NotFound";
 import FeaturedArticles from "../pages/AllArticles/FeaturedArticles";
 import PostArticle from "../pages/PostArticle/PostArticle";
 import MyArticles from "../pages/MyArticles/myArticles";
+import PrivateRoutes from "../components/PrivateRoute/PrivateRoutes";
 
 const router = createBrowserRouter([
   {
@@ -36,11 +37,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/postArticle",
-        Component: PostArticle,
+        element: <PrivateRoutes><PostArticle></PostArticle></PrivateRoutes>,
       },
       {
         path: "/myArticles",
-        Component: MyArticles,
+        element:   <PrivateRoutes><MyArticles></MyArticles></PrivateRoutes>,
       }
     ],
   },
