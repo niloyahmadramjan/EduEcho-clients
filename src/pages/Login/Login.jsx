@@ -1,5 +1,5 @@
 import Lottie from "lottie-react";
-import { Link } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import loginAnimation from "../../assets/lotties/register.json";
 import Swal from "sweetalert2";
 import axios from "axios";
@@ -13,6 +13,9 @@ const Login = () => {
     handleLogInUserWithGithub,
     fetchUserData,
   } = AuthUser();
+  const navigate = useNavigate();
+  const location = useLocation();
+  console.log(location.state)
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -29,6 +32,7 @@ const Login = () => {
           showConfirmButton: false,
           timer: 2000,
         });
+        navigate(location.state? location.state : "/")
         form.reset();
       })
       .catch((error) => {
@@ -70,6 +74,7 @@ const Login = () => {
           showConfirmButton: false,
           timer: 2000,
         });
+        navigate(location.state? location.state : "/")
       })
       .catch((error) => {
         Swal.fire({
@@ -108,6 +113,7 @@ const Login = () => {
           showConfirmButton: false,
           timer: 2000,
         });
+        navigate(location.state? location.state : "/")
       })
       .catch((error) => {
         Swal.fire({

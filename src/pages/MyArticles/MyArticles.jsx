@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import axios from "axios";
-import { ThumbsUp, MessageCircle } from "lucide-react";
+import { ThumbsUp, MessageCircle, Pencil, Trash2 } from "lucide-react";
 import AuthUser from "../../services/Hook/AuthUser";
 import LoadingAnimation from "../loadingPage/LoadingAnimation";
 
@@ -102,6 +102,19 @@ const MyArticles = () => {
                 </button>
               </div>
             </div>
+            <div className="flex justify-between gap-3 m-4 ">
+              <label
+                htmlFor="edit-article-modal"
+                className="btn btn-sm btn-outline btn-primary flex items-center gap-1"
+              >
+                <Pencil size={16} /> Edit
+              </label>
+
+              <button className="btn btn-sm btn-outline btn-error flex items-center gap-1">
+                <Trash2 size={16} />
+                Delete
+              </button>
+            </div>
           </motion.div>
         ))}
       </div>
@@ -115,6 +128,139 @@ const MyArticles = () => {
             </span>
           )}
         </button>
+      </div>
+      {/* Modal Component */}
+      <input type="checkbox" id="edit-article-modal" className="modal-toggle" />
+      <div className="modal">
+        <div className="modal-box w-11/12 max-w-3xl">
+          <h3 className="font-bold text-2xl text-center mb-6">Edit Article</h3>
+
+          <form className="space-y-4">
+            {/* Title & Category */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="label">
+                  <span className="label-text">Title</span>
+                </label>
+                <input
+                  type="text"
+                  name="title"
+                  className="input input-bordered w-full"
+                  placeholder="Article Title"
+                />
+              </div>
+
+              <div>
+                <label className="label">
+                  <span className="label-text">Category</span>
+                </label>
+                <select
+                  name="category"
+                  className="select select-bordered w-full"
+                >
+                  <option disabled selected>
+                    Choose a Category
+                  </option>
+                  <option>Technology</option>
+                  <option>Science</option>
+                  <option>Arts</option>
+                  <option>Health</option>
+                  <option>Culture</option>
+                  <option>Business</option>
+                  <option>Education</option>
+                  <option>Photography</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Tags */}
+            <div>
+              <label className="label">
+                <span className="label-text">Tags (comma separated)</span>
+              </label>
+              <input
+                type="text"
+                name="tags"
+                className="input input-bordered w-full"
+                placeholder="React, AI, JavaScript"
+              />
+            </div>
+
+            {/* Thumbnail */}
+            <div>
+              <label className="label">
+                <span className="label-text">Thumbnail URL</span>
+              </label>
+              <input
+                type="text"
+                name="thumbnail"
+                className="input input-bordered w-full"
+                placeholder="https://example.com/image.jpg"
+              />
+            </div>
+
+            {/* Date */}
+            <div>
+              <label className="label">
+                <span className="label-text">Date</span>
+              </label>
+              <input
+                type="date"
+                name="date"
+                className="input input-bordered w-full"
+              />
+            </div>
+
+            {/* Content */}
+            <div>
+              <label className="label">
+                <span className="label-text">Content</span>
+              </label>
+              <textarea
+                name="content"
+                className="textarea textarea-bordered w-full"
+                rows="5"
+                placeholder="Update article content..."
+              ></textarea>
+            </div>
+
+            {/* Author Info */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="label">
+                  <span className="label-text">Username</span>
+                </label>
+                <input
+                  type="text"
+                  name="username"
+                  readOnly
+                  className="input input-bordered bg-gray-100 w-full"
+                />
+              </div>
+              <div>
+                <label className="label">
+                  <span className="label-text">Author Photo URL</span>
+                </label>
+                <input
+                  type="text"
+                  name="author_photo"
+                  readOnly
+                  className="input input-bordered bg-gray-100 w-full"
+                />
+              </div>
+            </div>
+
+            {/* Modal Actions */}
+            <div className="modal-action">
+              <label htmlFor="edit-article-modal" className="btn btn-outline">
+                Cancel
+              </label>
+              <button type="submit" className="btn btn-primary">
+                Save Changes
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );
