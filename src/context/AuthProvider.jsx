@@ -44,16 +44,7 @@ const AuthProvider = ({ children }) => {
   }
 
 
-  const fetchUserData = (uid) => {
-  axios.get(`http://localhost:3000/userinfo/${uid}`)
-    .then((res) => {
-      const user = res.data;
-     setUser(user)
-    })
-    .catch((err) => {
-      console.error("Failed to fetch user info", err);
-    });
-};
+
 
 
   const userInfo = {
@@ -63,21 +54,39 @@ const AuthProvider = ({ children }) => {
     handleLogInUserWithGoogle,
     handleLogInUserWithGithub,
     handleUserSignOut,
-    fetchUserData,
     user,
     setUser,
     setLoading,
     loading
   };
 
-  
-      useEffect(() => {
-      const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-        setUser(currentUser);
-        setLoading(false);
-      });
-      return () => unsubscribe();
-    }, []);
+  useEffect(() => {
+  const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    if (currentUser) {
+      setLoading(true);
+      setUser(currentUser);
+      axios
+        .get(`http://localhost:3000/userinfo/${currentUser.uid}`)
+        .then((res) => {
+          const mergedUser = {
+            ...currentUser,
+            ...res.data,
+          };
+          setUser(mergedUser);
+        })
+        .catch((err) => {
+          console.error("Failed to fetch user info from MongoDB", err);
+        })
+        .finally(() => setLoading(false));
+    } else {
+      setUser(null);
+      setLoading(false);
+    }
+  });
+
+  return () => unsubscribe();
+}, []);
+
 
   return (
     <AuthContext.Provider value={userInfo}>{children}</AuthContext.Provider>

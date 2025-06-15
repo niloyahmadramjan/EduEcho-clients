@@ -11,11 +11,10 @@ const Login = () => {
     setLoading,
     handleLogInUserWithGoogle,
     handleLogInUserWithGithub,
-    fetchUserData,
   } = AuthUser();
   const navigate = useNavigate();
   const location = useLocation();
-  console.log(location.state)
+  console.log(location.state);
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -23,8 +22,7 @@ const Login = () => {
     const email = form.email.value;
     const pass = form.pass.value;
     handleUserSignIn(email, pass)
-      .then((data) => {
-        fetchUserData(data.user.uid);
+      .then(() => {
         Swal.fire({
           position: "center",
           icon: "success",
@@ -32,7 +30,7 @@ const Login = () => {
           showConfirmButton: false,
           timer: 2000,
         });
-        navigate(location.state? location.state : "/")
+        navigate(location.state ? location.state : "/");
         form.reset();
       })
       .catch((error) => {
@@ -52,7 +50,6 @@ const Login = () => {
     handleLogInUserWithGoogle()
       .then((data) => {
         const user = data.user;
-        fetchUserData(user.uid);
         axios
           .post("http://localhost:3000/userinfo", {
             uid: user.uid,
@@ -74,7 +71,7 @@ const Login = () => {
           showConfirmButton: false,
           timer: 2000,
         });
-        navigate(location.state? location.state : "/")
+        navigate(location.state ? location.state : "/");
       })
       .catch((error) => {
         Swal.fire({
@@ -92,7 +89,7 @@ const Login = () => {
     handleLogInUserWithGithub()
       .then((data) => {
         const user = data.user;
-         fetchUserData(user.uid);
+
         axios
           .post("http://localhost:3000/userinfo", {
             uid: user.uid,
@@ -113,7 +110,7 @@ const Login = () => {
           showConfirmButton: false,
           timer: 2000,
         });
-        navigate(location.state? location.state : "/")
+        navigate(location.state ? location.state : "/");
       })
       .catch((error) => {
         Swal.fire({
