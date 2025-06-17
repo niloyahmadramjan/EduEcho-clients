@@ -2,15 +2,14 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import axios from "axios";
 import { ThumbsUp, MessageCircle, X } from "lucide-react";
-import LoadingAnimation from "../loadingPage/LoadingAnimation";
 import AuthUser from "../../services/Hook/AuthUser";
-import { Link, useNavigate } from "react-router";
+import { Link, useLoaderData, useNavigate } from "react-router";
 import Swal from "sweetalert2";
 
-const FeaturedArticles = () => {
+const CategoryArticle = () => {
+  const catagroy = useLoaderData();
   const [articles, setArticles] = useState([]);
   const [showArticles, setShowArticles] = useState(true);
-  const [loading, setLoading] = useState(false);
   const [likesData, setLikesData] = useState({});
   const [commentsData, setCommentsData] = useState([]);
   const [newComment, setNewComment] = useState("");
@@ -18,21 +17,11 @@ const FeaturedArticles = () => {
   const { user } = AuthUser();
   const navigate = useNavigate();
 
+  // ⚠️ setArticles must be inside useEffect:
   useEffect(() => {
-    setLoading(true);
-    const fetchArticles = async () => {
-      try {
-        const { data } = await axios.get("http://localhost:3000/articles");
-        const sliced = data.slice(0, 6);
-        setArticles(showArticles ? sliced : data);
-      } catch (err) {
-        console.error("Error fetching articles:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchArticles();
-  }, [showArticles]);
+    const sliced = catagroy.slice(0, 6);
+    setArticles(showArticles ? sliced : catagroy);
+  }, [catagroy, showArticles]);
 
   useEffect(() => {
     const fetchLikes = async () => {
@@ -49,7 +38,9 @@ const FeaturedArticles = () => {
   useEffect(() => {
     const fetchComments = async () => {
       try {
-        const { data } = await axios.get("http://localhost:3000/articles/comments");
+        const { data } = await axios.get(
+          "http://localhost:3000/articles/comments"
+        );
         setCommentsData(data);
       } catch (error) {
         console.error("Error fetching comments:", error);
@@ -125,8 +116,13 @@ const FeaturedArticles = () => {
     };
 
     try {
-      await axios.post("http://localhost:3000/articles/comments", commentPayload);
-      const { data } = await axios.get("http://localhost:3000/articles/comments");
+      await axios.post(
+        "http://localhost:3000/articles/comments",
+        commentPayload
+      );
+      const { data } = await axios.get(
+        "http://localhost:3000/articles/comments"
+      );
       setCommentsData(data);
       setNewComment("");
     } catch (error) {
@@ -134,11 +130,14 @@ const FeaturedArticles = () => {
     }
   };
 
-  if (loading) return <LoadingAnimation />;
+  const categoryName = catagroy[0]?.category || "Articles";
+
 
   return (
     <div className="px-4 py-12 max-w-7xl mx-auto">
-      <h2 className="text-3xl font-bold text-center mb-12">Featured Articles</h2>
+      <h2 className="text-3xl font-bold text-center mb-12">
+       {categoryName}
+      </h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {articles.map((article, i) => {
@@ -178,7 +177,12 @@ const FeaturedArticles = () => {
                 </p>
 
                 <div className="flex justify-end">
-                  <Link to={`/readMore/${article._id}`} className="btn border-none">Read More</Link>
+                  <Link
+                    to={`/readMore/${article._id}`}
+                    className="btn border-none"
+                  >
+                    Read More
+                  </Link>
                 </div>
 
                 <div className="mt-auto pt-4 border-t flex items-center justify-between text-sm text-gray-500">
@@ -197,7 +201,9 @@ const FeaturedArticles = () => {
                   <button
                     onClick={() => handleToggleLike(article._id)}
                     className={`flex items-center gap-1 transition cursor-pointer ${
-                      liked ? "text-blue-600" : "text-gray-500 hover:text-primary"
+                      liked
+                        ? "text-blue-600"
+                        : "text-gray-500 hover:text-primary"
                     }`}
                   >
                     <ThumbsUp size={18} />
@@ -223,7 +229,9 @@ const FeaturedArticles = () => {
           {showArticles ? (
             <span className="btn btn-dash btn-primary my-5">More Articles</span>
           ) : (
-            <span className="btn btn-dash btn-secondary my-5">Less Articles</span>
+            <span className="btn btn-dash btn-secondary my-5">
+              Less Articles
+            </span>
           )}
         </button>
       </div>
@@ -243,10 +251,7 @@ const FeaturedArticles = () => {
 
             <div className="max-h-60 overflow-y-auto space-y-3 mb-4">
               {getCommentsForArticle(modalArticleId).map((cmt, index) => (
-                <div
-                  key={index}
-                  className="bg-gray-100 p-2 rounded-md text-sm"
-                >
+                <div key={index} className="bg-gray-100 p-2 rounded-md text-sm">
                   <div className="flex items-center gap-2 mb-1">
                     <img
                       src={cmt.user_photo}
@@ -279,4 +284,4 @@ const FeaturedArticles = () => {
   );
 };
 
-export default FeaturedArticles;
+export default CategoryArticle;

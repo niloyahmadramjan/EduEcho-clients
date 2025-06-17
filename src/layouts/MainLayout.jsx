@@ -12,6 +12,7 @@ import PrivateRoutes from "../components/PrivateRoute/PrivateRoutes";
 import About from "../pages/About/About";
 import ArticleDetails from "../pages/ArticleDetails/ArticleDetails";
 import LoadingAnimation from "../pages/loadingPage/LoadingAnimation";
+import CategoryArticle from "../pages/CategoriesSection/CategoryArticle";
 
 const router = createBrowserRouter([
   {
@@ -54,9 +55,16 @@ const router = createBrowserRouter([
       {
         path: '/readMore/:id',
         loader: ({params})=> fetch(`http://localhost:3000/articles/${params.id}`),
-       element: <ArticleDetails></ArticleDetails>,
+       element: <PrivateRoutes><ArticleDetails></ArticleDetails></PrivateRoutes>,
        hydrateFallbackElement: <LoadingAnimation></LoadingAnimation>
       }
+      ,{
+        path: "/categoryArticle/:id",
+        loader: ({params})=> fetch(`http://localhost:3000/articlesCategory/${params.id}`),
+        element: <CategoryArticle></CategoryArticle>,
+        hydrateFallbackElement: <LoadingAnimation></LoadingAnimation>
+      }
+      
     ],
   },
 ]);

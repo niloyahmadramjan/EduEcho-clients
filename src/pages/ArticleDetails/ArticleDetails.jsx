@@ -29,9 +29,9 @@ const ArticleDetails = () => {
   const fetchComments = async () => {
     try {
       const res = await axios.get("http://localhost:3000/articles/comments");
-      const filtered = res.data.filter(
-        (comment) => comment.article_id === article._id
-      );
+      const filtered = res.data
+        .filter((comment) => comment.article_id === article._id)
+        .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)); // newest first
       setCommentsData(filtered);
     } catch (err) {
       console.error("Error fetching comments:", err);
@@ -97,7 +97,6 @@ const ArticleDetails = () => {
       console.error("Comment error:", err);
     }
   };
-
 
   return (
     <motion.div
@@ -205,6 +204,11 @@ const ArticleDetails = () => {
                 <div>
                   <p className="font-semibold">{cmt.user_name}</p>
                   <p className="text-sm text-gray-700">{cmt.comment}</p>
+                  {cmt.timestamp && (
+                    <p className="text-xs text-gray-400 mt-1">
+                      {new Date(cmt.timestamp).toLocaleString()}
+                    </p>
+                  )}
                 </div>
               </div>
             ))
