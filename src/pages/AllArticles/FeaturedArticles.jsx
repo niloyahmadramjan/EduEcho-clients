@@ -1,18 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import axios from "axios";
-import { ThumbsUp, MessageCircle } from "lucide-react";
+import { ThumbsUp, MessageCircle, X } from "lucide-react";
 import LoadingAnimation from "../loadingPage/LoadingAnimation";
 import AuthUser from "../../services/Hook/AuthUser";
+import { useNavigate } from "react-router";
+import Swal from "sweetalert2";
 
 const FeaturedArticles = () => {
   const [articles, setArticles] = useState([]);
   const [showArticles, setShowArticles] = useState(true);
   const [loading, setLoading] = useState(false);
   const [likesData, setLikesData] = useState({});
+  const [commentsData, setCommentsData] = useState([]);
+  const [newComment, setNewComment] = useState("");
+  const [modalArticleId, setModalArticleId] = useState(null);
   const { user } = AuthUser();
+  const navigate = useNavigate();
 
-  // Fetch articles
   useEffect(() => {
     setLoading(true);
     const fetchArticles = async () => {
@@ -29,7 +34,6 @@ const FeaturedArticles = () => {
     fetchArticles();
   }, [showArticles]);
 
-  // Fetch like data
   useEffect(() => {
     const fetchLikes = async () => {
       try {
@@ -42,8 +46,30 @@ const FeaturedArticles = () => {
     fetchLikes();
   }, [articles]);
 
+  useEffect(() => {
+    const fetchComments = async () => {
+      try {
+        const { data } = await axios.get("http://localhost:3000/articles/comments");
+        setCommentsData(data);
+      } catch (error) {
+        console.error("Error fetching comments:", error);
+      }
+    };
+    fetchComments();
+  }, [articles]);
+
   const handleToggleLike = async (articleId) => {
-    if (!user?.uid) return alert("Please login to like articles.");
+    if (!user) {
+      return Swal.fire({
+        title: "Login required to like",
+        icon: "warning",
+        confirmButtonText: "Login",
+      }).then((res) => {
+        if (res.isConfirmed) {
+          navigate("/login");
+        }
+      });
+    }
 
     const articleLikeInfo = {
       articleId,
@@ -55,8 +81,6 @@ const FeaturedArticles = () => {
 
     try {
       await axios.post("http://localhost:3000/articles/likes", articleLikeInfo);
-
-      // Refresh likes after liking
       const res = await axios.get("http://localhost:3000/articles/likes");
       setLikesData(res.data);
     } catch (err) {
@@ -64,26 +88,62 @@ const FeaturedArticles = () => {
     }
   };
 
-  // Fixed version: Handles likesData as object
   const getLikeInfo = (id) => {
     const uidList = likesData[id] || [];
     return {
-      count: uidList.length,
+      countLikes: uidList.length,
       liked: uidList.includes(user?.uid),
     };
+  };
+
+  const getCommentsForArticle = (articleId) => {
+    return commentsData.filter((comment) => comment.article_id === articleId);
+  };
+
+  const handleAddComment = async (articleId) => {
+    if (!user) {
+      Swal.fire({
+        title: "Login required to comment",
+        icon: "warning",
+        confirmButtonText: "Login",
+      }).then((res) => {
+        if (res.isConfirmed) {
+          navigate("/login");
+        }
+      });
+      return;
+    }
+
+    if (!newComment.trim()) return;
+
+    const commentPayload = {
+      article_id: articleId,
+      user_id: user.uid,
+      user_name: user.displayName,
+      user_photo: user.photoURL,
+      comment: newComment.trim(),
+    };
+
+    try {
+      await axios.post("http://localhost:3000/articles/comments", commentPayload);
+      const { data } = await axios.get("http://localhost:3000/articles/comments");
+      setCommentsData(data);
+      setNewComment("");
+    } catch (error) {
+      console.error("Error adding comment:", error);
+    }
   };
 
   if (loading) return <LoadingAnimation />;
 
   return (
     <div className="px-4 py-12 max-w-7xl mx-auto">
-      <h2 className="text-3xl font-bold text-center mb-12">
-        Featured Articles
-      </h2>
+      <h2 className="text-3xl font-bold text-center mb-12">Featured Articles</h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {articles.map((article, i) => {
-          const { count, liked } = getLikeInfo(article._id);
+          const { countLikes, liked } = getLikeInfo(article._id);
+          const comments = getCommentsForArticle(article._id);
 
           return (
             <motion.div
@@ -137,18 +197,19 @@ const FeaturedArticles = () => {
                   <button
                     onClick={() => handleToggleLike(article._id)}
                     className={`flex items-center gap-1 transition cursor-pointer ${
-                      liked
-                        ? "text-blue-600"
-                        : "text-gray-500 hover:text-primary"
+                      liked ? "text-blue-600" : "text-gray-500 hover:text-primary"
                     }`}
                   >
                     <ThumbsUp size={18} />
-                    Like <span>{count}</span>
+                    Like <span>{countLikes}</span>
                   </button>
 
-                  <button className="flex items-center gap-1 text-gray-500 hover:text-primary transition cursor-pointer">
+                  <button
+                    onClick={() => setModalArticleId(article._id)}
+                    className="flex items-center gap-1 text-gray-500 hover:text-primary transition cursor-pointer"
+                  >
                     <MessageCircle size={18} />
-                    Comment <span>20</span>
+                    Comment <span>{comments.length}</span>
                   </button>
                 </div>
               </div>
@@ -162,12 +223,58 @@ const FeaturedArticles = () => {
           {showArticles ? (
             <span className="btn btn-dash btn-primary my-5">More Articles</span>
           ) : (
-            <span className="btn btn-dash btn-secondary my-5">
-              Less Articles
-            </span>
+            <span className="btn btn-dash btn-secondary my-5">Less Articles</span>
           )}
         </button>
       </div>
+
+      {/* COMMENT MODAL */}
+      {modalArticleId && (
+        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center px-4">
+          <div className="bg-white rounded-lg w-full max-w-lg p-6 relative">
+            <button
+              className="absolute top-2 right-2 text-gray-500 hover:text-red-500"
+              onClick={() => setModalArticleId(null)}
+            >
+              <X size={24} />
+            </button>
+
+            <h3 className="text-xl font-semibold mb-4">Comments</h3>
+
+            <div className="max-h-60 overflow-y-auto space-y-3 mb-4">
+              {getCommentsForArticle(modalArticleId).map((cmt, index) => (
+                <div
+                  key={index}
+                  className="bg-gray-100 p-2 rounded-md text-sm"
+                >
+                  <div className="flex items-center gap-2 mb-1">
+                    <img
+                      src={cmt.user_photo}
+                      alt={cmt.user_name}
+                      className="w-6 h-6 rounded-full"
+                    />
+                    <strong>{cmt.user_name}</strong>
+                  </div>
+                  <p className="ml-8">{cmt.comment}</p>
+                </div>
+              ))}
+            </div>
+
+            <input
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+              placeholder="Write a comment..."
+              className="input input-bordered w-full mb-2"
+            />
+            <button
+              onClick={() => handleAddComment(modalArticleId)}
+              className="btn btn-primary w-full"
+            >
+              Post Comment
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

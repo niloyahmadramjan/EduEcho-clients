@@ -14,7 +14,6 @@ const Login = () => {
   } = AuthUser();
   const navigate = useNavigate();
   const location = useLocation();
-  console.log(location.state);
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -57,11 +56,9 @@ const Login = () => {
             email: user.email,
             photo: user.photoURL,
           })
-          .then((res) => {
-            console.log(res);
+          .then(() => {
           })
-          .catch((error) => {
-            console.log(error);
+          .catch(() => {
             setLoading(false);
           });
         Swal.fire({
@@ -97,11 +94,11 @@ const Login = () => {
             email: user.email,
             photo: user.photoURL,
           })
-          .then((res) => {
-            console.log("User info saved:", res.data);
+          .then(() => {
+            
           })
-          .catch((error) => {
-            console.error("Failed to save user to MongoDB:", error);
+          .catch(() => {
+           
           });
         Swal.fire({
           position: "center",

@@ -6,9 +6,9 @@ import axios from "axios";
 import AuthUser from "../../services/Hook/AuthUser";
 
 const Register = () => {
-  const { handleUserCreate, setUser, handleUserUpdate,setLoading } = AuthUser();
-    
- 
+  const { handleUserCreate, setUser, handleUserUpdate, setLoading } =
+    AuthUser();
+
   const handleRegister = (e) => {
     e.preventDefault();
     const form = e.target;
@@ -21,28 +21,32 @@ const Register = () => {
       .then((data) => {
         handleUserUpdate(userName, imageUrl).then(() => {
           setUser(data.user);
-       axios
-          .post("http://localhost:3000/userinfo", {
-            uid: data.user.uid,
-            name: userName,
-            email: userEmail,
-            photo: imageUrl,
-          })
-          .then((res) => {
-            console.log("User info saved:", res.data);
-          })
-          .catch((error) => {
-            console.error("Failed to save user to MongoDB:", error);
-            setLoading(false)
-          });
+          axios
+            .post("http://localhost:3000/userinfo", {
+              uid: data.user.uid,
+              name: userName,
+              email: userEmail,
+              photo: imageUrl,
+            })
+            .then(() => {})
+            .catch((error) => {
+              Swal.fire({
+                position: "center",
+                icon: "error",
+                title: error.message,
+                showConfirmButton: false,
+                timer: 2000,
+              });
+              setLoading(false);
+            });
 
-        Swal.fire({
-          position: "center",
-          icon: "success",
-          title: "Registration successful!",
-          showConfirmButton: false,
-          timer: 2000,
-        });
+          Swal.fire({
+            position: "center",
+            icon: "success",
+            title: "Registration successful!",
+            showConfirmButton: false,
+            timer: 2000,
+          });
           form.reset();
         });
       })
@@ -55,7 +59,7 @@ const Register = () => {
           timer: 2500,
         });
         form.reset();
-        setLoading(false)
+        setLoading(false);
       });
   };
   return (

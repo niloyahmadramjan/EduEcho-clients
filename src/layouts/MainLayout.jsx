@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { createBrowserRouter } from "react-router";
 import Routes from "../routes/Routes";
 import Home from "../pages/Home/Home";
@@ -9,6 +9,9 @@ import FeaturedArticles from "../pages/AllArticles/FeaturedArticles";
 import PostArticle from "../pages/PostArticle/PostArticle";
 import MyArticles from "../pages/MyArticles/myArticles";
 import PrivateRoutes from "../components/PrivateRoute/PrivateRoutes";
+import About from "../pages/About/About";
+import ArticleDetails from "../pages/ArticleDetails/ArticleDetails";
+import LoadingAnimation from "../pages/loadingPage/LoadingAnimation";
 
 const router = createBrowserRouter([
   {
@@ -42,6 +45,17 @@ const router = createBrowserRouter([
       {
         path: "/myArticles",
         element:   <PrivateRoutes><MyArticles></MyArticles></PrivateRoutes>,
+      }
+      ,
+      {
+        path: "aboutUs",
+        Component: About
+      },
+      {
+        path: '/readMore/:id',
+        loader: ({params})=> fetch(`http://localhost:3000/articles/${params.id}`),
+       element: <ArticleDetails></ArticleDetails>,
+       hydrateFallbackElement: <LoadingAnimation></LoadingAnimation>
       }
     ],
   },
