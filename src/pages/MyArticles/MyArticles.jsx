@@ -23,7 +23,11 @@ const MyArticles = () => {
   const fetchArticles = async () => {
     setLoading(true);
     try {
-      const { data } = await axios.get(`http://localhost:3000/myArticles?email=${user.email}`);
+      const { data } = await axios.get(`https://eduecho-server.vercel.app/myArticles?email=${user.email}`, {
+              headers: {
+              Authorization: `Bearer ${localStorage.getItem("eduEcho-access-token")}`,
+                    }
+    });
       const sliced = data.slice(0, 6);
       setArticles(showArticles ? sliced : data);
     } finally {
@@ -38,7 +42,9 @@ const MyArticles = () => {
   useEffect(() => {
     const fetchLikes = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/articles/likes");
+        const res = await axios.get(
+          "https://eduecho-server.vercel.app/articles/likes"
+        );
         setLikesData(res.data);
       } catch (err) {
         console.error("Error fetching likes:", err.message);
@@ -50,7 +56,9 @@ const MyArticles = () => {
   useEffect(() => {
     const fetchComments = async () => {
       try {
-        const { data } = await axios.get("http://localhost:3000/articles/comments");
+        const { data } = await axios.get(
+          "https://eduecho-server.vercel.app/articles/comments"
+        );
         setCommentsData(data);
       } catch (error) {
         console.error("Error fetching comments:", error);
@@ -62,7 +70,10 @@ const MyArticles = () => {
   const handleUpdate = (e) => {
     e.preventDefault();
     axios
-      .patch(`http://localhost:3000/articles/${editData._id}`, editData)
+      .patch(
+        `https://eduecho-server.vercel.app/articles/${editData._id}`,
+        editData
+      )
       .then((res) => {
         if (res.data.modifiedCount > 0) {
           document.getElementById("edit-article-modal").checked = false;
@@ -109,8 +120,13 @@ const MyArticles = () => {
     };
 
     try {
-      await axios.post("http://localhost:3000/articles/likes", articleLikeInfo);
-      const res = await axios.get("http://localhost:3000/articles/likes");
+      await axios.post(
+        "https://eduecho-server.vercel.app/articles/likes",
+        articleLikeInfo
+      );
+      const res = await axios.get(
+        "https://eduecho-server.vercel.app/articles/likes"
+      );
       setLikesData(res.data);
     } catch (err) {
       console.error("Like error:", err.message);
@@ -154,8 +170,13 @@ const MyArticles = () => {
     };
 
     try {
-      await axios.post("http://localhost:3000/articles/comments", commentPayload);
-      const { data } = await axios.get("http://localhost:3000/articles/comments");
+      await axios.post(
+        "https://eduecho-server.vercel.app/articles/comments",
+        commentPayload
+      );
+      const { data } = await axios.get(
+        "https://eduecho-server.vercel.app/articles/comments"
+      );
       setCommentsData(data);
       setNewComment("");
     } catch (error) {
@@ -175,16 +196,25 @@ const MyArticles = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .delete(`http://localhost:3000/articles/${id}`)
+          .delete(`https://eduecho-server.vercel.app/articles/${id}`)
           .then((res) => {
             if (res.data.deletedCount > 0) {
               fetchArticles();
-              Swal.fire("Deleted!", "Your article has been deleted.", "success");
+              Swal.fire(
+                "Deleted!",
+                "Your article has been deleted.",
+                "success"
+              );
             }
           })
           .catch((err) => console.error(err.message));
       }
     });
+  };
+
+  const stripHtml = (html) => {
+    const doc = new DOMParser().parseFromString(html, "text/html");
+    return doc.body.textContent || "";
   };
 
   if (loading) return <LoadingAnimation />;
@@ -222,14 +252,19 @@ const MyArticles = () => {
                   <span>{article.read_time || "5 min read"}</span>
                 </div>
 
-                <h3 className="text-lg font-semibold text-base-content mb-1">{article.title}</h3>
+                <h3 className="text-lg font-semibold text-base-content mb-1">
+                  {article.title}
+                </h3>
 
                 <p className="text-sm text-gray-600 mb-4 line-clamp-3">
-                  {article.content.slice(0, 120)}...
+                  {stripHtml(article.content).slice(0, 120)}...
                 </p>
 
                 <div className="flex justify-end">
-                  <Link to={`/readMore/${article._id}`} className="btn border-none">
+                  <Link
+                    to={`/readMore/${article._id}`}
+                    className="btn border-none"
+                  >
                     Read More
                   </Link>
                 </div>
@@ -250,7 +285,9 @@ const MyArticles = () => {
                   <button
                     onClick={() => handleToggleLike(article._id)}
                     className={`flex items-center gap-1 transition cursor-pointer ${
-                      liked ? "text-blue-600" : "text-gray-500 hover:text-primary"
+                      liked
+                        ? "text-blue-600"
+                        : "text-gray-500 hover:text-primary"
                     }`}
                   >
                     <ThumbsUp size={18} />
@@ -294,7 +331,9 @@ const MyArticles = () => {
           {showArticles ? (
             <span className="btn btn-dash btn-primary my-5">More Articles</span>
           ) : (
-            <span className="btn btn-dash btn-secondary my-5">Less Articles</span>
+            <span className="btn btn-dash btn-secondary my-5">
+              Less Articles
+            </span>
           )}
         </button>
       </div>
@@ -462,7 +501,11 @@ const MyArticles = () => {
               {getCommentsForArticle(modalArticleId).map((cmt, index) => (
                 <div key={index} className="bg-gray-100 p-2 rounded-md text-sm">
                   <div className="flex items-center gap-2 mb-1">
-                    <img src={cmt.user_photo} alt={cmt.user_name} className="w-6 h-6 rounded-full" />
+                    <img
+                      src={cmt.user_photo}
+                      alt={cmt.user_name}
+                      className="w-6 h-6 rounded-full"
+                    />
                     <strong>{cmt.user_name}</strong>
                   </div>
                   <p className="ml-8">{cmt.comment}</p>

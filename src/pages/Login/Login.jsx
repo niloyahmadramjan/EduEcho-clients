@@ -50,14 +50,13 @@ const Login = () => {
       .then((data) => {
         const user = data.user;
         axios
-          .post("http://localhost:3000/userinfo", {
+          .post("https://eduecho-server.vercel.app/userinfo", {
             uid: user.uid,
             name: user.displayName,
             email: user.email,
             photo: user.photoURL,
           })
-          .then(() => {
-          })
+          .then(() => {})
           .catch(() => {
             setLoading(false);
           });
@@ -88,18 +87,14 @@ const Login = () => {
         const user = data.user;
 
         axios
-          .post("http://localhost:3000/userinfo", {
+          .post("https://eduecho-server.vercel.app/userinfo", {
             uid: user.uid,
             name: user.displayName,
             email: user.email,
             photo: user.photoURL,
           })
-          .then(() => {
-            
-          })
-          .catch(() => {
-           
-          });
+          .then(() => {})
+          .catch(() => {});
         Swal.fire({
           position: "center",
           icon: "success",
@@ -159,10 +154,10 @@ const Login = () => {
             <button className="btn btn-primary w-full">Login</button>
           </form>
           {/* GitHub */}
-          <div className="flex justify-between pt-5">
+          <div className="flex-col md:flex  justify-between pt-5 gap-2 space-y-2">
             <button
               onClick={handleGithubPopup}
-              className="btn bg-black text-white border-black"
+              className="btn bg-black text-white border-black w-full"
             >
               <svg
                 aria-label="GitHub logo"
@@ -182,7 +177,7 @@ const Login = () => {
             {/* Google */}
             <button
               onClick={handleGooglePopup}
-              className="btn bg-white text-black border-[#e5e5e5]"
+              className="btn bg-white text-black border-[#e5e5e5] w-full"
             >
               <svg
                 aria-label="Google logo"

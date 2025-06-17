@@ -18,7 +18,9 @@ const ArticleDetails = () => {
   // Fetch Likes
   const fetchLikes = async () => {
     try {
-      const res = await axios.get("http://localhost:3000/articles/likes");
+      const res = await axios.get(
+        "https://eduecho-server.vercel.app/articles/likes"
+      );
       setLikesData(res.data[article._id] || []);
     } catch (err) {
       console.error("Error fetching likes:", err);
@@ -28,7 +30,9 @@ const ArticleDetails = () => {
   // Fetch Comments
   const fetchComments = async () => {
     try {
-      const res = await axios.get("http://localhost:3000/articles/comments");
+      const res = await axios.get(
+        "https://eduecho-server.vercel.app/articles/comments"
+      );
       const filtered = res.data
         .filter((comment) => comment.article_id === article._id)
         .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)); // newest first
@@ -62,7 +66,10 @@ const ArticleDetails = () => {
     };
 
     try {
-      await axios.post("http://localhost:3000/articles/likes", likePayload);
+      await axios.post(
+        "https://eduecho-server.vercel.app/articles/likes",
+        likePayload
+      );
       fetchLikes();
     } catch (err) {
       console.error("Like error:", err);
@@ -90,7 +97,10 @@ const ArticleDetails = () => {
     };
 
     try {
-      await axios.post("http://localhost:3000/articles/comments", commentPayload);
+      await axios.post(
+        "https://eduecho-server.vercel.app/articles/comments",
+        commentPayload
+      );
       await fetchComments();
       setNewComment("");
     } catch (err) {

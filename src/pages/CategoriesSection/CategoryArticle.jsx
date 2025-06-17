@@ -26,7 +26,9 @@ const CategoryArticle = () => {
   useEffect(() => {
     const fetchLikes = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/articles/likes");
+        const res = await axios.get(
+          "https://eduecho-server.vercel.app/articles/likes"
+        );
         setLikesData(res.data);
       } catch (err) {
         console.error("Error fetching likes:", err.message);
@@ -39,7 +41,7 @@ const CategoryArticle = () => {
     const fetchComments = async () => {
       try {
         const { data } = await axios.get(
-          "http://localhost:3000/articles/comments"
+          "https://eduecho-server.vercel.app/articles/comments"
         );
         setCommentsData(data);
       } catch (error) {
@@ -71,8 +73,13 @@ const CategoryArticle = () => {
     };
 
     try {
-      await axios.post("http://localhost:3000/articles/likes", articleLikeInfo);
-      const res = await axios.get("http://localhost:3000/articles/likes");
+      await axios.post(
+        "https://eduecho-server.vercel.app/articles/likes",
+        articleLikeInfo
+      );
+      const res = await axios.get(
+        "https://eduecho-server.vercel.app/articles/likes"
+      );
       setLikesData(res.data);
     } catch (err) {
       console.error("Like error:", err.message);
@@ -117,11 +124,11 @@ const CategoryArticle = () => {
 
     try {
       await axios.post(
-        "http://localhost:3000/articles/comments",
+        "https://eduecho-server.vercel.app/articles/comments",
         commentPayload
       );
       const { data } = await axios.get(
-        "http://localhost:3000/articles/comments"
+        "https://eduecho-server.vercel.app/articles/comments"
       );
       setCommentsData(data);
       setNewComment("");
@@ -132,12 +139,9 @@ const CategoryArticle = () => {
 
   const categoryName = catagroy[0]?.category || "Articles";
 
-
   return (
     <div className="px-4 py-12 max-w-7xl mx-auto">
-      <h2 className="text-3xl font-bold text-center mb-12">
-       {categoryName}
-      </h2>
+      <h2 className="text-3xl font-bold text-center mb-12">{categoryName}</h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {articles.map((article, i) => {

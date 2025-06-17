@@ -22,7 +22,7 @@ const PostArticle = () => {
     data.author_photo = user?.photoURL;
 
     try {
-      const res = await axios.post("http://localhost:3000/articles", data);
+      const res = await axios.post("https://eduecho-server.vercel.app/articles", data);
       if (res.data.insertedId) {
         Swal.fire({
           position: "center",

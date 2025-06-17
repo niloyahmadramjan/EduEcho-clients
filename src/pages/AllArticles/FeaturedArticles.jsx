@@ -22,7 +22,9 @@ const FeaturedArticles = () => {
     setLoading(true);
     const fetchArticles = async () => {
       try {
-        const { data } = await axios.get("http://localhost:3000/articles");
+        const { data } = await axios.get(
+          "https://eduecho-server.vercel.app/articles"
+        );
         const sliced = data.slice(0, 6);
         setArticles(showArticles ? sliced : data);
       } catch (err) {
@@ -37,7 +39,9 @@ const FeaturedArticles = () => {
   useEffect(() => {
     const fetchLikes = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/articles/likes");
+        const res = await axios.get(
+          "https://eduecho-server.vercel.app/articles/likes"
+        );
         setLikesData(res.data);
       } catch (err) {
         console.error("Error fetching likes:", err.message);
@@ -49,7 +53,9 @@ const FeaturedArticles = () => {
   useEffect(() => {
     const fetchComments = async () => {
       try {
-        const { data } = await axios.get("http://localhost:3000/articles/comments");
+        const { data } = await axios.get(
+          "https://eduecho-server.vercel.app/articles/comments"
+        );
         setCommentsData(data);
       } catch (error) {
         console.error("Error fetching comments:", error);
@@ -80,8 +86,13 @@ const FeaturedArticles = () => {
     };
 
     try {
-      await axios.post("http://localhost:3000/articles/likes", articleLikeInfo);
-      const res = await axios.get("http://localhost:3000/articles/likes");
+      await axios.post(
+        "https://eduecho-server.vercel.app/articles/likes",
+        articleLikeInfo
+      );
+      const res = await axios.get(
+        "https://eduecho-server.vercel.app/articles/likes"
+      );
       setLikesData(res.data);
     } catch (err) {
       console.error("Like error:", err.message);
@@ -125,8 +136,13 @@ const FeaturedArticles = () => {
     };
 
     try {
-      await axios.post("http://localhost:3000/articles/comments", commentPayload);
-      const { data } = await axios.get("http://localhost:3000/articles/comments");
+      await axios.post(
+        "https://eduecho-server.vercel.app/articles/comments",
+        commentPayload
+      );
+      const { data } = await axios.get(
+        "https://eduecho-server.vercel.app/articles/comments"
+      );
       setCommentsData(data);
       setNewComment("");
     } catch (error) {
@@ -138,7 +154,9 @@ const FeaturedArticles = () => {
 
   return (
     <div className="px-4 py-12 max-w-7xl mx-auto">
-      <h2 className="text-3xl font-bold text-center mb-12">Featured Articles</h2>
+      <h2 className="text-3xl font-bold text-center mb-12">
+        Featured Articles
+      </h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {articles.map((article, i) => {
@@ -178,7 +196,12 @@ const FeaturedArticles = () => {
                 </p>
 
                 <div className="flex justify-end">
-                  <Link to={`/readMore/${article._id}`} className="btn border-none">Read More</Link>
+                  <Link
+                    to={`/readMore/${article._id}`}
+                    className="btn border-none"
+                  >
+                    Read More
+                  </Link>
                 </div>
 
                 <div className="mt-auto pt-4 border-t flex items-center justify-between text-sm text-gray-500">
@@ -197,7 +220,9 @@ const FeaturedArticles = () => {
                   <button
                     onClick={() => handleToggleLike(article._id)}
                     className={`flex items-center gap-1 transition cursor-pointer ${
-                      liked ? "text-blue-600" : "text-gray-500 hover:text-primary"
+                      liked
+                        ? "text-blue-600"
+                        : "text-gray-500 hover:text-primary"
                     }`}
                   >
                     <ThumbsUp size={18} />
@@ -223,7 +248,9 @@ const FeaturedArticles = () => {
           {showArticles ? (
             <span className="btn btn-dash btn-primary my-5">More Articles</span>
           ) : (
-            <span className="btn btn-dash btn-secondary my-5">Less Articles</span>
+            <span className="btn btn-dash btn-secondary my-5">
+              Less Articles
+            </span>
           )}
         </button>
       </div>
@@ -243,10 +270,7 @@ const FeaturedArticles = () => {
 
             <div className="max-h-60 overflow-y-auto space-y-3 mb-4">
               {getCommentsForArticle(modalArticleId).map((cmt, index) => (
-                <div
-                  key={index}
-                  className="bg-gray-100 p-2 rounded-md text-sm"
-                >
+                <div key={index} className="bg-gray-100 p-2 rounded-md text-sm">
                   <div className="flex items-center gap-2 mb-1">
                     <img
                       src={cmt.user_photo}

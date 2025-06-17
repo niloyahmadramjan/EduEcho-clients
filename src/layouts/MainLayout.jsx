@@ -37,34 +37,48 @@ const router = createBrowserRouter([
       },
       {
         path: "/featuredArticles",
-        Component: FeaturedArticles
+        Component: FeaturedArticles,
       },
       {
         path: "/postArticle",
-        element: <PrivateRoutes><PostArticle></PostArticle></PrivateRoutes>,
+        element: (
+          <PrivateRoutes>
+            <PostArticle></PostArticle>
+          </PrivateRoutes>
+        ),
       },
       {
         path: "/myArticles",
-        element:   <PrivateRoutes><MyArticles></MyArticles></PrivateRoutes>,
-      }
-      ,
-      {
-        path: "aboutUs",
-        Component: About
+        element: (
+          <PrivateRoutes>
+            <MyArticles></MyArticles>
+          </PrivateRoutes>
+        ),
       },
       {
-        path: '/readMore/:id',
-        loader: ({params})=> fetch(`http://localhost:3000/articles/${params.id}`),
-       element: <PrivateRoutes><ArticleDetails></ArticleDetails></PrivateRoutes>,
-       hydrateFallbackElement: <LoadingAnimation></LoadingAnimation>
-      }
-      ,{
+        path: "aboutUs",
+        Component: About,
+      },
+      {
+        path: "/readMore/:id",
+        loader: ({ params }) =>
+          fetch(`https://eduecho-server.vercel.app/articles/${params.id}`),
+        element: (
+          <PrivateRoutes>
+            <ArticleDetails></ArticleDetails>
+          </PrivateRoutes>
+        ),
+        hydrateFallbackElement: <LoadingAnimation></LoadingAnimation>,
+      },
+      {
         path: "/categoryArticle/:id",
-        loader: ({params})=> fetch(`http://localhost:3000/articlesCategory/${params.id}`),
+        loader: ({ params }) =>
+          fetch(
+            `https://eduecho-server.vercel.app/articlesCategory/${params.id}`
+          ),
         element: <CategoryArticle></CategoryArticle>,
-        hydrateFallbackElement: <LoadingAnimation></LoadingAnimation>
-      }
-      
+        hydrateFallbackElement: <LoadingAnimation></LoadingAnimation>,
+      },
     ],
   },
 ]);

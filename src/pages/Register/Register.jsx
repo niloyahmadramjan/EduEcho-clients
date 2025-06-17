@@ -4,10 +4,13 @@ import registerAnimation from "../../assets/lotties/registration.json";
 import Swal from "sweetalert2";
 import axios from "axios";
 import AuthUser from "../../services/Hook/AuthUser";
+import { useState } from "react";
 
 const Register = () => {
   const { handleUserCreate, setUser, handleUserUpdate, setLoading } =
     AuthUser();
+
+  const [passwordChecker, setPasswordChecker] = useState();
 
   const handleRegister = (e) => {
     e.preventDefault();
@@ -17,12 +20,30 @@ const Register = () => {
     const userEmail = form.email.value;
     const password = form.pass.value;
 
+    const pwdUppercase = /[A-Z]/;
+    const pwdLowercase = /[a-z]/;
+    const pwdLength = /^.{6,}$/;
+
+    setPasswordChecker(null);
+    if (!pwdUppercase.test(password)) {
+      setPasswordChecker("Password should be at least one uppercase letter.");
+      return;
+    }
+    if (!pwdLowercase.test(password)) {
+      setPasswordChecker("Password should be at least one lowercase letter.");
+      return;
+    }
+    if (!pwdLength.test(password)) {
+      setPasswordChecker("Password should be at least 6 characters long.");
+      return;
+    }
+
     handleUserCreate(userEmail, password)
       .then((data) => {
         handleUserUpdate(userName, imageUrl).then(() => {
           setUser(data.user);
           axios
-            .post("http://localhost:3000/userinfo", {
+            .post("https://eduecho-server.vercel.app/userinfo", {
               uid: data.user.uid,
               name: userName,
               email: userEmail,
@@ -81,6 +102,7 @@ const Register = () => {
                 type="text"
                 className="input input-bordered w-full"
                 placeholder="Your name"
+                required
               />
             </div>
             <div className="mb-4">
@@ -90,6 +112,7 @@ const Register = () => {
                 type="url"
                 className="input input-bordered w-full"
                 placeholder="Your photo URL"
+                required
               />
             </div>
             <div className="mb-4">
@@ -99,6 +122,7 @@ const Register = () => {
                 name="email"
                 className="input input-bordered w-full"
                 placeholder="Your email"
+                required
               />
             </div>
             <div className="mb-4">
@@ -108,7 +132,13 @@ const Register = () => {
                 name="pass"
                 className="input input-bordered w-full"
                 placeholder="Password"
+                required
               />
+              {passwordChecker ? (
+                <span className="text-red-400">{passwordChecker}</span>
+              ) : (
+                ""
+              )}
             </div>
             {/* {errorMessage? <p className="text-red-400 text-sm">{errorMessage}</p> : ''} */}
             <button className="btn btn-primary w-full">Register</button>
