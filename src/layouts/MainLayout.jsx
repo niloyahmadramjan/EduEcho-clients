@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React from "react";
 import { createBrowserRouter } from "react-router";
 import Routes from "../routes/Routes";
 import Home from "../pages/Home/Home";
@@ -7,12 +7,12 @@ import Register from "../pages/Register/Register";
 import NotFound from "../pages/NotFound/NotFound";
 import FeaturedArticles from "../pages/AllArticles/FeaturedArticles";
 import PostArticle from "../pages/PostArticle/PostArticle";
-import MyArticles from "../pages/MyArticles/myArticles";
 import PrivateRoutes from "../components/PrivateRoute/PrivateRoutes";
 import About from "../pages/About/About";
 import ArticleDetails from "../pages/ArticleDetails/ArticleDetails";
 import LoadingAnimation from "../pages/loadingPage/LoadingAnimation";
 import CategoryArticle from "../pages/CategoriesSection/CategoryArticle";
+import MyArticles from "../pages/MyArticles/MyArticles";
 
 const router = createBrowserRouter([
   {
