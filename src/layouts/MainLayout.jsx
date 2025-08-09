@@ -64,9 +64,7 @@ const router = createBrowserRouter([
         loader: ({ params }) =>
           fetch(`https://eduecho-server.vercel.app/articles/${params.id}`),
         element: (
-          <PrivateRoutes>
             <ArticleDetails></ArticleDetails>
-          </PrivateRoutes>
         ),
         hydrateFallbackElement: <LoadingAnimation></LoadingAnimation>,
       },

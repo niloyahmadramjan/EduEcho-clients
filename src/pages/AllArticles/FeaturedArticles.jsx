@@ -4,65 +4,115 @@ import axios from "axios";
 import { ThumbsUp, MessageCircle, X } from "lucide-react";
 import LoadingAnimation from "../loadingPage/LoadingAnimation";
 import AuthUser from "../../services/Hook/AuthUser";
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router"; 
 import Swal from "sweetalert2";
 
 const FeaturedArticles = () => {
+  // rawArticles = full list from server
+  const [rawArticles, setRawArticles] = useState([]);
+  // articles = displayed (sorted + possibly sliced)
   const [articles, setArticles] = useState([]);
   const [showArticles, setShowArticles] = useState(true);
   const [loading, setLoading] = useState(false);
-  const [likesData, setLikesData] = useState({});
+  const [likesData, setLikesData] = useState({}); // expected: { articleId: [uid1, uid2, ...], ... }
   const [commentsData, setCommentsData] = useState([]);
   const [newComment, setNewComment] = useState("");
   const [modalArticleId, setModalArticleId] = useState(null);
+  const [sortType, setSortType] = useState("newest"); // newest | oldest | popular
+
   const { user } = AuthUser();
   const navigate = useNavigate();
 
+  // Helper to parse article date robustly
+  const getArticleTime = (a) => {
+    const d = a?.date || a?.publishedAt || a?.createdAt || "";
+    const t = Date.parse(d);
+    return isNaN(t) ? 0 : t;
+  };
+
+  const getLikesCount = (id) => {
+    const val = likesData?.[id];
+    if (Array.isArray(val)) return val.length;
+    if (typeof val === "number") return val;
+    return 0;
+  };
+
+  // Fetch articles once on mount
   useEffect(() => {
-    setLoading(true);
+    let mounted = true;
     const fetchArticles = async () => {
+      setLoading(true);
       try {
         const { data } = await axios.get(
           "https://eduecho-server.vercel.app/articles"
         );
-        const sliced = data.slice(0, 6);
-        setArticles(showArticles ? sliced : data);
+        if (!mounted) return;
+        setRawArticles(Array.isArray(data) ? data : []);
       } catch (err) {
         console.error("Error fetching articles:", err);
       } finally {
-        setLoading(false);
+        if (mounted) setLoading(false);
       }
     };
     fetchArticles();
-  }, [showArticles]);
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
+  // Fetch likes (mapping articleId -> array of userUIDs or counts)
   useEffect(() => {
+    let mounted = true;
     const fetchLikes = async () => {
       try {
         const res = await axios.get(
           "https://eduecho-server.vercel.app/articles/likes"
         );
-        setLikesData(res.data);
+        if (mounted) setLikesData(res.data || {});
       } catch (err) {
         console.error("Error fetching likes:", err.message);
       }
     };
     fetchLikes();
-  }, [articles]);
+    return () => (mounted = false);
+  }, []);
 
+  // Fetch comments once
   useEffect(() => {
+    let mounted = true;
     const fetchComments = async () => {
       try {
         const { data } = await axios.get(
           "https://eduecho-server.vercel.app/articles/comments"
         );
-        setCommentsData(data);
+        if (mounted) setCommentsData(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error("Error fetching comments:", error);
       }
     };
     fetchComments();
-  }, [articles]);
+    return () => (mounted = false);
+  }, []);
+
+  // Compute sorted & sliced articles whenever rawArticles, sortType, likesData or showArticles change
+  useEffect(() => {
+    if (!Array.isArray(rawArticles)) {
+      setArticles([]);
+      return;
+    }
+
+    const sorted = [...rawArticles];
+
+    if (sortType === "newest") {
+      sorted.sort((a, b) => getArticleTime(b) - getArticleTime(a));
+    } else if (sortType === "oldest") {
+      sorted.sort((a, b) => getArticleTime(a) - getArticleTime(b));
+    } else if (sortType === "popular") {
+      sorted.sort((a, b) => getLikesCount(b._id) - getLikesCount(a._id));
+    }
+
+    setArticles(showArticles ? sorted.slice(0, 6) : sorted);
+  }, [rawArticles, sortType, likesData, showArticles]);
 
   const handleToggleLike = async (articleId) => {
     if (!user) {
@@ -90,17 +140,18 @@ const FeaturedArticles = () => {
         "https://eduecho-server.vercel.app/articles/likes",
         articleLikeInfo
       );
+      // refresh likes mapping after toggling
       const res = await axios.get(
         "https://eduecho-server.vercel.app/articles/likes"
       );
-      setLikesData(res.data);
+      setLikesData(res.data || {});
     } catch (err) {
       console.error("Like error:", err.message);
     }
   };
 
   const getLikeInfo = (id) => {
-    const uidList = likesData[id] || [];
+    const uidList = Array.isArray(likesData?.[id]) ? likesData[id] : [];
     return {
       countLikes: uidList.length,
       liked: uidList.includes(user?.uid),
@@ -140,10 +191,11 @@ const FeaturedArticles = () => {
         "https://eduecho-server.vercel.app/articles/comments",
         commentPayload
       );
+      // refresh comments
       const { data } = await axios.get(
         "https://eduecho-server.vercel.app/articles/comments"
       );
-      setCommentsData(data);
+      setCommentsData(Array.isArray(data) ? data : []);
       setNewComment("");
     } catch (error) {
       console.error("Error adding comment:", error);
@@ -154,6 +206,22 @@ const FeaturedArticles = () => {
 
   return (
     <div className="px-4 py-12 max-w-7xl mx-auto">
+      {/* Sorting Dropdown (top-left) */}
+      <div className="flex items-center justify-start mb-6 gap-3">
+        <label className="text-sm font-medium text-gray-600 dark:text-gray-300">
+          Sort:
+        </label>
+        <select
+          value={sortType}
+          onChange={(e) => setSortType(e.target.value)}
+          className="select select-bordered"
+        >
+          <option value="newest">Newest Articles</option>
+          <option value="oldest">Oldest Articles</option>
+          <option value="popular">Most Popular</option>
+        </select>
+      </div>
+
       <h2 className="text-3xl font-bold text-center mb-12">
         Featured Articles
       </h2>
@@ -192,14 +260,11 @@ const FeaturedArticles = () => {
                 </h3>
 
                 <p className="text-sm text-gray-600 mb-4 line-clamp-3">
-                  {article.content.slice(0, 120)}...
+                  {article.content?.slice(0, 120) ?? ""}...
                 </p>
 
                 <div className="flex justify-end">
-                  <Link
-                    to={`/readMore/${article._id}`}
-                    className="btn border-none"
-                  >
+                  <Link to={`/readMore/${article._id}`} className="btn border-none">
                     Read More
                   </Link>
                 </div>
@@ -220,9 +285,7 @@ const FeaturedArticles = () => {
                   <button
                     onClick={() => handleToggleLike(article._id)}
                     className={`flex items-center gap-1 transition cursor-pointer ${
-                      liked
-                        ? "text-blue-600"
-                        : "text-gray-500 hover:text-primary"
+                      liked ? "text-blue-600" : "text-gray-500 hover:text-primary"
                     }`}
                   >
                     <ThumbsUp size={18} />

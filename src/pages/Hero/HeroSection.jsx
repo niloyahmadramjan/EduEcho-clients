@@ -39,7 +39,7 @@ const bannerData = [
   },
 ];
 
-const Banner = () => {
+const HeroSection = () => {
   return (
     <div className="my-2 md:my-5 overflow-hidden rounded-lg shadow-xl">
       <Carousel
@@ -121,4 +121,4 @@ const Banner = () => {
   );
 };
 
-export default Banner;
+export default HeroSection;
