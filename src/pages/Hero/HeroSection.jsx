@@ -103,7 +103,7 @@ const HeroSection = () => {
                 transition={{ duration: 0.6, delay: 0.8 }}
               >
                 <Link
-                  to="/blog"
+                  to="/featuredArticles"
                   className="inline-block mt-6 px-6 py-2 sm:px-8 sm:py-3 font-semibold rounded-full shadow-lg hover:scale-105 transition-transform"
                   style={{
                     backgroundColor: colors.primary,
