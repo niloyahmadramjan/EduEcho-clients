@@ -14,6 +14,14 @@ import LoadingAnimation from "../pages/loadingPage/LoadingAnimation";
 import CategoryArticle from "../pages/CategoriesSection/CategoryArticle";
 import MyArticles from "../pages/MyArticles/MyArticles";
 
+// Admin Components - Add these imports with correct paths
+import AdminRoute from "../routes/adminRoutes";
+import AdminLayout from "../components/admin/AdminLayout";
+import AdminDashboard from "../pages/admin/AdminDashboard";
+import UsersManagement from "../components/admin/UsersManagement";
+import ArticlesManagement from "../components/admin/ArticlesManagement";
+import CommentsManagement from "../components/admin/CommentsManagement";
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -63,9 +71,7 @@ const router = createBrowserRouter([
         path: "/readMore/:id",
         loader: ({ params }) =>
           fetch(`https://eduecho-server.vercel.app/articles/${params.id}`),
-        element: (
-            <ArticleDetails></ArticleDetails>
-        ),
+        element: <ArticleDetails></ArticleDetails>,
         hydrateFallbackElement: <LoadingAnimation></LoadingAnimation>,
       },
       {
@@ -76,6 +82,34 @@ const router = createBrowserRouter([
           ),
         element: <CategoryArticle></CategoryArticle>,
         hydrateFallbackElement: <LoadingAnimation></LoadingAnimation>,
+      },
+    ],
+  },
+  // Add Admin Routes as a separate route without Navbar/Footer
+  {
+    path: "/admin",
+    element: (
+      <AdminRoute>
+        <AdminLayout />
+        
+      </AdminRoute>
+    ),
+    children: [
+      {
+        index: true,
+        element: <AdminDashboard/>,
+      },
+      {
+        path: "users",
+        element: <UsersManagement />,
+      },
+      {
+        path: "articles",
+        element: <ArticlesManagement />,
+      },
+      {
+        path: "comments",
+        element: <CommentsManagement />,
       },
     ],
   },

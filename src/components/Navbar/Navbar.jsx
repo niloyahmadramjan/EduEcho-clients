@@ -1,17 +1,19 @@
 import { Link, NavLink } from "react-router";
-import { useState } from "react";
-import { FaHome, FaBookOpen, FaPlus, FaBars } from "react-icons/fa";
+import { useState,  } from "react";
+import { FaHome, FaBookOpen, FaPlus, FaBars, FaTachometerAlt } from "react-icons/fa";
 import { MdDarkMode, MdLightMode } from "react-icons/md";
 import { motion } from "framer-motion";
 import { FcAbout } from "react-icons/fc";
 import AuthUser from "../../services/Hook/AuthUser";
 import avator from "../../assets/icons/profile.png";
 import Swal from "sweetalert2";
+import useAdmin from "../../hook/useAdmin";
 
 const Navbar = () => {
   const { user, handleUserSignOut, loading } = AuthUser();
   const [imgSrc, setImgSrc] = useState(user?.photoURL || avator);
   const [theme, setTheme] = useState("light");
+  const [isAdmin, adminLoading] = useAdmin(); 
 
   const navLinks = [
     { to: "/", label: "Home", icon: <FaHome />, delay: 0.2 },
@@ -35,6 +37,13 @@ const Navbar = () => {
             icon: <FaPlus />,
             delay: 0.5,
           },
+          // Add Admin Dashboard link if user is admin
+          ...(isAdmin ? [{
+            to: "/admin",
+            label: "Admin Dashboard",
+            icon: <FaTachometerAlt />,
+            delay: 0.55,
+          }] : [])
         ]
       : []),
     { to: "/aboutUs", label: "About Us", icon: <FcAbout />, delay: 0.6 },
@@ -52,7 +61,7 @@ const Navbar = () => {
         Swal.fire({
           position: "center",
           icon: "success",
-          title: "LogOut successfull !",
+          title: "LogOut successful!",
           showConfirmButton: false,
           timer: 2000,
         });
@@ -69,7 +78,7 @@ const Navbar = () => {
   };
 
   return (
-    <div className="fixed top-0 left-0 z-50 w-full  bg-opacity-90 backdrop-blur-md text-base-content shadow transition-colors duration-300">
+    <div className="fixed top-0 left-0 z-50 w-full bg-opacity-90 backdrop-blur-md text-base-content shadow transition-colors duration-300">
       <div className="max-w-7xl mx-auto">
         <motion.div
           initial={{ y: -80 }}
@@ -143,8 +152,8 @@ const Navbar = () => {
                     to={to}
                     className={({ isActive }) =>
                       isActive
-                        ? "text-cyan-400 font-bold"
-                        : "hover:text-cyan-300"
+                        ? "text-cyan-400 font-bold bg-base-300 bg-opacity-20 rounded-lg"
+                        : "hover:text-cyan-300 hover:bg-base-300 hover:bg-opacity-10 rounded-lg transition-colors duration-200"
                     }
                   >
                     {icon} <span className="ml-1">{label}</span>
@@ -152,7 +161,7 @@ const Navbar = () => {
                 </motion.li>
               ))}
 
-              {loading ? (
+              {loading || adminLoading ? (
                 <span className="loading loading-spinner text-primary"></span>
               ) : user?.email ? (
                 <div className="dropdown dropdown-end">
@@ -171,35 +180,47 @@ const Navbar = () => {
                   </div>
                   <ul
                     tabIndex={0}
-                    className="menu menu-sm dropdown-content bg-accent-content rounded-box z-1 mt-3 w-52 p-2 shadow"
+                    className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow border border-base-300"
                   >
                     <li>
-                      <Link to="/myArticles" className="justify-between text-black dark:text-white">
+                      <Link to="/myArticles" className="justify-between">
                         My Articles
                       </Link>
                     </li>
                     <li>
-                      <Link to="/postArticle" className="text-black dark:text-white transition-colors duration-300">
+                      <Link to="/postArticle">
                         Post Article
                       </Link>
                     </li>
+                    {/* Add Admin Dashboard to dropdown if user is admin */}
+                    {isAdmin && (
+                      <li>
+                        <Link to="/admin">
+                          {/* <FaTachometerAlt className="inline mr-2" /> */}
+                          Admin Dashboard
+                        </Link>
+                      </li>
+                    )}
                     <li>
                       <button
                         onClick={handleSignOut}
-                        className="text-black dark:text-white transition-colors duration-300"
+                        className="text-error hover:bg-error hover:text-white"
                       >
                         Logout
                       </button>
                     </li>
-                    <li>
-                      <a className="text-black dark:text-white transition-colors duration-300">
+                    <li className="border-t border-base-300 mt-2 pt-2">
+                      <a className="text-sm text-base-content/70 cursor-default">
                         {user.email}
                       </a>
+                      {isAdmin && (
+                        <span className="badge badge-primary badge-sm ml-2">Admin</span>
+                      )}
                     </li>
                   </ul>
                 </div>
               ) : (
-                <Link to="/login" className="btn btn-primary ">
+                <Link to="/login" className="btn btn-primary">
                   Login
                 </Link>
               )}
@@ -215,7 +236,7 @@ const Navbar = () => {
               {theme === "light" ? <MdDarkMode /> : <MdLightMode />}
             </button>
             <div className="md:hidden">
-              {loading ? (
+              {loading || adminLoading ? (
                 <span className="loading loading-spinner text-primary"></span>
               ) : user?.email ? (
                 <div className="dropdown dropdown-end">
@@ -234,39 +255,47 @@ const Navbar = () => {
                   </div>
                   <ul
                     tabIndex={0}
-                    className="menu menu-sm dropdown-content bg-accent-content rounded-box z-1 mt-3 w-52 p-2 shadow"
+                    className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow border border-base-300"
                   >
                     <li>
-                      <Link to="/myArticles"
-                        className="justify-between text-black dark:text-white"
-                      >
+                      <Link to="/myArticles" className="justify-between">
                         My Articles
                       </Link>
                     </li>
                     <li>
-                      <Link to="/postArticle"
-                        className="text-black dark:text-white transition-colors duration-300"
-                      >
+                      <Link to="/postArticle">
                         Post Article
                       </Link>
                     </li>
+                    {/* Add Admin Dashboard to mobile dropdown if user is admin */}
+                    {isAdmin && (
+                      <li>
+                        <Link to="/admin" >
+                          {/* <FaTachometerAlt className="inline mr-2" /> */}
+                          Admin Dashboard
+                        </Link>
+                      </li>
+                    )}
                     <li>
                       <button
                         onClick={handleSignOut}
-                        className="text-black dark:text-white transition-colors duration-300"
+                        className="text-error hover:bg-error hover:text-white"
                       >
                         Logout
                       </button>
                     </li>
-                    <li>
-                      <a className="text-black dark:text-white transition-colors duration-300">
+                    <li className="border-t border-base-300 mt-2 pt-2">
+                      <a className="text-sm text-base-content/70 cursor-default">
                         {user.email}
                       </a>
+                      {isAdmin && (
+                        <span className="badge badge-primary badge-sm ml-2">Admin</span>
+                      )}
                     </li>
                   </ul>
                 </div>
               ) : (
-                <Link to="/login" className="btn btn-primary ">
+                <Link to="/login" className="btn btn-primary">
                   Login
                 </Link>
               )}
